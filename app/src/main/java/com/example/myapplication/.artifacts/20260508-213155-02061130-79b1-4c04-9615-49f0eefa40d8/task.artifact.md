@@ -1,0 +1,30 @@
+# Task Management
+
+- [ ] Research and Planning [/]
+    - [x] Explore existing Cargo/Market implementation
+    - [x] Understand Item and Inventory models
+    - [x] Research existing FPS counter and global overlays
+    - [ ] Plan Buff/Debuff system expansion
+    - [ ] Design futuristic UI components (Glassmorphism, Neon Glow)
+- [ ] Core Systems Expansion [ ]
+    - [ ] Update `ItemModel` and `ItemRegistry` with more detail
+    - [ ] Implement robust Buff/Debuff system in `SimulationEngine`
+    - [ ] Expand `DevLabManager` for advanced cheats
+- [ ] UI Component Redesign [ ]
+    - [ ] Create `CyberCard` and `NeonButton` components
+    - [ ] Implement `ImmersivePopup` for item details
+    - [ ] Enhance `GlobalOverlay` for FPS and diagnostics
+- [ ] Screen Redesign [ ]
+    - [ ] Redesign `CargoScreen` (Inventory tab)
+    - [ ] Redesign `CargoScreen` (Market tab)
+    - [ ] Implement `SettingsScreen`
+    - [ ] Implement `DevLabScreen` (Hidden Debug Menu)
+- [ ] Integration and Polish [ ]
+    - [ ] Update `PetNavHost` and Bottom Navigation
+    - [ ] Add animations and transitions
+    - [ ] Integrate Buddy reactions to buffs/debuffs
+- [ ] Verification [ ]
+    - [ ] Verify FPS stability
+    - [ ] Test Inventory and Shop functionality
+    - [ ] Test Settings and Cheat toggles
+    - [ ] Audit visual consistency
