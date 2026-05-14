@@ -29,7 +29,7 @@ class CasinoManager @Inject constructor(
     private val rewardDistribution: RewardDistributionEngine,
     private val cheatManager: com.example.myapplication.domain.admin.CheatManager
 ) {
-    private val ENTRY_COST = 100
+    private val ENTRY_COST = 1000
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
     private var crashJob: Job? = null
 

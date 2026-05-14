@@ -57,7 +57,7 @@ fun CasinoScreen(
             )
         } else if (!entryAuthorized) {
             CasinoEntryGate(
-                canAfford = coins >= 100,
+                canAfford = coins >= 1000,
                 onEnter = { viewModel.tryEnter() }
             )
         } else {
@@ -180,7 +180,7 @@ fun CasinoEntryGate(
                     fontWeight = FontWeight.Black
                 )
                 Text(
-                    text = if (canAfford) "Entrance fee is 100 CR. Would you like to enter?" else "You need at least 100 CR to enter the lounge.",
+                    text = if (canAfford) "Entrance fee is 1000 CR. Would you like to enter?" else "You need at least 1000 CR to enter the lounge.",
                     style = MaterialTheme.typography.bodyMedium,
                     color = Color.White.copy(alpha = 0.7f),
                     textAlign = TextAlign.Center,

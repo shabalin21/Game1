@@ -22,6 +22,11 @@ class CreatureAnimationController {
     var eyeOffsetX by mutableFloatStateOf(0f)
     
     private var time = 0f
+    private var reactionTime = 0f
+
+    fun react() {
+        reactionTime = 0.5f // Half a second of reaction
+    }
 
     fun update(
         deltaTime: Float, 
@@ -32,6 +37,10 @@ class CreatureAnimationController {
         // Clamp deltaTime to prevent huge jumps after app pauses/resumes
         val sanitizedDelta = deltaTime.coerceIn(0f, 0.1f)
         time += sanitizedDelta
+        
+        if (reactionTime > 0) {
+            reactionTime -= sanitizedDelta
+        }
 
         // Reset procedural values to prevent accumulation bugs (Fixes "Flying Buddy")
         jitterX = 0f
@@ -51,6 +60,14 @@ class CreatureAnimationController {
         bodyScaleY = 1f + (breath * 0.02f)
         bodyScaleX = 1f - (breath * 0.015f)
         
+        // 1.5 REACTION LAYER (Procedural Squash & Stretch)
+        if (reactionTime > 0) {
+            val reactionProgress = (reactionTime / 0.5f)
+            bodyScaleY *= 1f - (reactionProgress * 0.2f)
+            bodyScaleX *= 1f + (reactionProgress * 0.15f)
+            bodyOffsetY += reactionProgress * 20f // Squash down
+        }
+
         // 2. BEHAVIOR MODIFIERS
         when (psychology.currentActivity) {
             ActivityType.LOOKING_AROUND -> {

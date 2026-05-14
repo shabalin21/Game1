@@ -49,6 +49,9 @@ class PetViewModel @Inject constructor(
     val statistics = gameState.map { it.statistics }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), LifetimeStats())
 
+    val settings = gameState.map { it.settings }
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), SettingsModel())
+
     val trendingPost = flow {
         while(true) {
             emit(socialManager.getTrendingPost())

@@ -37,6 +37,8 @@ fun PetSprite(
     appearance: com.example.myapplication.domain.model.BuddyAppearance = com.example.myapplication.domain.model.BuddyAppearance(),
     employment: com.example.myapplication.domain.model.EmploymentState = com.example.myapplication.domain.model.EmploymentState(),
     onActivateDevLab: () -> Unit = {},
+    onPet: () -> Unit = {},
+    targetFps: Int = 60,
     modifiers: List<com.example.myapplication.domain.model.TimedModifier> = emptyList(),
     equippedItems: Map<com.example.myapplication.domain.model.ItemCategory, String> = emptyMap(),
     modifier: Modifier = Modifier
@@ -47,13 +49,18 @@ fun PetSprite(
     var lastTapTime by remember { mutableLongStateOf(0L) }
 
     // Update the controller in a frame loop
-    LaunchedEffect(emotion, psychology, isSleeping) {
+    LaunchedEffect(emotion, psychology, isSleeping, targetFps) {
         var lastTime = withFrameMillis { it }
+        val frameTimeTarget = 1000L / targetFps
+        
         while (true) {
             withFrameMillis { currentTime ->
                 val deltaTime = (currentTime - lastTime) / 1000f
                 lastTime = currentTime
                 animController.update(deltaTime, emotion, psychology, isSleeping)
+            }
+            if (targetFps < 120) {
+                kotlinx.coroutines.delay(frameTimeTarget)
             }
         }
     }
@@ -79,6 +86,9 @@ fun PetSprite(
             .pointerInput(Unit) {
                 detectTapGestures(
                     onTap = {
+                        animController.react()
+                        onPet()
+
                         val currentTime = System.currentTimeMillis()
                         if (currentTime - lastTapTime < 500) {
                             tapCount++

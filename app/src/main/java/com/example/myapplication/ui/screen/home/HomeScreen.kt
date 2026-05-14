@@ -50,6 +50,7 @@ fun HomeScreen(
     val coins by viewModel.coins.collectAsState()
     val btcPrice by viewModel.btcPrice.collectAsState()
     val world by viewModel.worldState.collectAsState()
+    val settings by viewModel.settings.collectAsState()
     val foodInventory by viewModel.foodInventory.collectAsState()
     val scope = rememberCoroutineScope()
 
@@ -58,13 +59,19 @@ fun HomeScreen(
     }
 
     // Update Atmosphere
-    LaunchedEffect(world) {
+    LaunchedEffect(world, settings.graphics.targetFps) {
         var lastTime = withFrameMillis { it }
+        val targetFps = settings.graphics.targetFps
+        val frameTimeTarget = 1000L / targetFps
+        
         while (true) {
             withFrameMillis { currentTime ->
                 val deltaTime = (currentTime - lastTime) / 1000f
                 lastTime = currentTime
                 atmosphereManager.update(deltaTime, world)
+            }
+            if (targetFps < 120) {
+                kotlinx.coroutines.delay(frameTimeTarget)
             }
         }
     }
@@ -119,6 +126,7 @@ fun HomeScreen(
                 pet = currentPet,
                 coins = coins,
                 btcPrice = btcPrice,
+                targetFps = settings.graphics.targetFps,
                 canFeed = foodInventory.isNotEmpty(),
                 onFeedClick = { showFoodDialog = true },
                 onPet = { viewModel.petThePet() },
@@ -144,6 +152,7 @@ fun HomeScreenContent(
     pet: PetModel,
     coins: Int,
     btcPrice: Float,
+    targetFps: Int = 60,
     canFeed: Boolean,
     onFeedClick: () -> Unit,
     onPet: () -> Unit,
@@ -197,6 +206,8 @@ fun HomeScreenContent(
                 modifiers = pet.activeModifiers,
                 equippedItems = pet.equippedItems,
                 onActivateDevLab = onActivateDevLab,
+                onPet = onPet,
+                targetFps = targetFps,
                 modifier = Modifier.fillMaxSize()
             )
         }
