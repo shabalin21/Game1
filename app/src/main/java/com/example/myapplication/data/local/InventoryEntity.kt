@@ -11,9 +11,3 @@ data class InventoryEntity(
     val rarity: String,
     val floatValue: Float? = null
 )
-
-@Entity(tableName = "user_economy")
-data class EconomyEntity(
-    @PrimaryKey val userId: String = "default_user",
-    val coins: Int = 500
-)
