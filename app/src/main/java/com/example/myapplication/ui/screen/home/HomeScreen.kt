@@ -62,16 +62,19 @@ fun HomeScreen(
     LaunchedEffect(world, settings.graphics.targetFps) {
         var lastTime = withFrameMillis { it }
         val targetFps = settings.graphics.targetFps
-        val frameTimeTarget = 1000L / targetFps
+        val targetFrameTime = 1f / targetFps
+        var accumulator = 0f
         
         while (true) {
             withFrameMillis { currentTime ->
                 val deltaTime = (currentTime - lastTime) / 1000f
                 lastTime = currentTime
-                atmosphereManager.update(deltaTime, world)
-            }
-            if (targetFps < 120) {
-                kotlinx.coroutines.delay(frameTimeTarget)
+                
+                accumulator += deltaTime
+                if (accumulator >= targetFrameTime) {
+                    atmosphereManager.update(accumulator, world)
+                    accumulator = 0f
+                }
             }
         }
     }

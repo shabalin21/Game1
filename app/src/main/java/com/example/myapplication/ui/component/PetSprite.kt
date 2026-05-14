@@ -51,16 +51,19 @@ fun PetSprite(
     // Update the controller in a frame loop
     LaunchedEffect(emotion, psychology, isSleeping, targetFps) {
         var lastTime = withFrameMillis { it }
-        val frameTimeTarget = 1000L / targetFps
+        val targetFrameTime = 1f / targetFps
+        var accumulator = 0f
         
         while (true) {
             withFrameMillis { currentTime ->
                 val deltaTime = (currentTime - lastTime) / 1000f
                 lastTime = currentTime
-                animController.update(deltaTime, emotion, psychology, isSleeping)
-            }
-            if (targetFps < 120) {
-                kotlinx.coroutines.delay(frameTimeTarget)
+                
+                accumulator += deltaTime
+                if (accumulator >= targetFrameTime) {
+                    animController.update(accumulator, emotion, psychology, isSleeping)
+                    accumulator = 0f
+                }
             }
         }
     }

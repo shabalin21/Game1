@@ -52,6 +52,26 @@ class MainActivity : ComponentActivity() {
         setContent {
             val settings by settingsRepository.getSettings().collectAsState(initial = SettingsModel())
             
+            // DYNAMIC REFRESH RATE CONTROL
+            LaunchedEffect(settings.graphics.targetFps) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                    val window = window
+                    val params = window.attributes
+                    val target = settings.graphics.targetFps.toFloat()
+                    
+                    // Find a display mode that matches or exceeds our target
+                    val modes = display?.supportedModes ?: emptyArray()
+                    val bestMode = modes
+                        .filter { it.refreshRate >= target - 1f }
+                        .minByOrNull { it.refreshRate }
+                    
+                    if (bestMode != null) {
+                        params.preferredDisplayModeId = bestMode.modeId
+                        window.attributes = params
+                    }
+                }
+            }
+
             PetSimulationTheme {
                 Box(modifier = Modifier.fillMaxSize()) {
                     PetNavHost()
