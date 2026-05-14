@@ -1,5 +1,58 @@
 package com.example.myapplication.domain.model
 
+import kotlinx.serialization.Serializable
+
+@Serializable
+enum class ItemCategory {
+    PRODUCTS, CLOTHES, ITEMS, HOMES, VEHICLES, JEWELRY, PETS,
+    // Cosmetic Granularity
+    HAIR, EYES, SKIN, AURA, ACCESSORY_HEAD, ACCESSORY_BODY,
+    // Legacy mapping
+    FOOD, DRINKS, MEDICAL, ELECTRONICS, GYM, GAMBLING, LUXURY, MISC,
+    HEAD, TOP, BOTTOM, SHOES, ACCESSORY, FURNITURE, BOOSTER, RARE, ILLEGAL, DECORATION, WORK_ENHANCER, MEDICINE, TOY, COSMETIC
+}
+
+@Serializable
+enum class ItemRarity {
+    COMMON, UNCOMMON, RARE, EPIC, LEGENDARY, MYTHIC, GOLD
+}
+
+@Serializable
+enum class BuffType {
+    NONE, CAFFEINE, SUGAR_RUSH, FOCUS, RELAXATION, MEDICINE, ADRENALINE, ADDICTION
+}
+
+@Serializable
+data class ItemModel(
+    val id: String,
+    val name: String,
+    val icon: String,
+    val description: String,
+    val price: Int,
+    val category: ItemCategory,
+    val rarity: ItemRarity = ItemRarity.COMMON,
+    val effect: StatEffect = StatEffect(),
+    val durationMillis: Long = 0, // 0 for instant effects
+    val buffType: BuffType = BuffType.NONE,
+    val sideEffect: StatEffect? = null,
+    val unlockLevel: Int = 1,
+    val isConsumable: Boolean = true,
+    val floatValue: Float? = null // For GOLD items: 0.9 to 1.0
+)
+
+@Serializable
+data class StatEffect(
+    val hungerChange: Float = 0f,
+    val energyChange: Float = 0f,
+    val happinessChange: Float = 0f,
+    val healthChange: Float = 0f,
+    val stressChange: Float = 0f,
+    val socialChange: Float = 0f,
+    val intelligenceChange: Float = 0f,
+    val fitnessChange: Float = 0f,
+    val comfortChange: Float = 0f
+)
+
 /**
  * ITEM REGISTRY.
  * Categorized into PRODUCTS, CLOTHES, ITEMS, HOMES.
@@ -154,4 +207,173 @@ object ItemRegistry {
     )
 
     fun getItem(id: String): ItemModel? = allItems.find { it.id == id }
+}
+
+@Serializable
+data class JobModel(
+    val id: String,
+    val name: String,
+    val icon: String,
+    val hourlyPay: Int,
+    val stressMult: Float,
+    val fatigueMult: Float,
+    val minLevel: Int,
+    val tier: JobTier,
+    val requiredExperience: Int,
+    val difficulty: Int,
+    val description: String
+)
+
+@Serializable
+enum class JobTier {
+    ENTRY, SPECIALIST, EXPERT, ELITE, EXECUTIVE
+}
+
+@Serializable
+data class EmploymentState(
+    val jobId: String? = null,
+    val performance: Float = 0f, // 0-100
+    val experience: Int = 0,
+    val totalEarned: Int = 0,
+    val shiftStartTimestamp: Long = 0,
+    val isWarningsIssued: Boolean = false,
+    val firedCooldownTimestamp: Long = 0
+)
+
+object JobRegistry {
+    val allJobs = listOf(
+        // ENTRY TIER
+        JobModel("lab_assistant", "Lab Assistant", "🔬", 25, 1.1f, 1.2f, 1, JobTier.ENTRY, 0, 1, "Basic research and facility maintenance."),
+        JobModel("data_entry", "Data Entry", "🧹", 20, 1.0f, 1.1f, 1, JobTier.ENTRY, 0, 1, "Clerical work and data organization."),
+        JobModel("night_security", "Night Security", "🔦", 30, 0.8f, 1.8f, 2, JobTier.ENTRY, 100, 2, "Monitoring facility surveillance."),
+        
+        // SPECIALIST TIER
+        JobModel("developer", "Junior Developer", "💻", 45, 1.3f, 1.5f, 3, JobTier.SPECIALIST, 250, 2, "Writing and debugging software scripts."),
+        JobModel("logistics_op", "Logistics Operator", "🎮", 65, 1.5f, 1.6f, 5, JobTier.SPECIALIST, 500, 3, "Coordinating remote supply chains."),
+        JobModel("courier", "Express Courier", "🏃", 55, 1.4f, 2.0f, 4, JobTier.SPECIALIST, 400, 3, "Physical delivery of high-priority packages."),
+        
+        // EXPERT TIER
+        JobModel("analyst", "Data Analyst", "🧠", 90, 1.8f, 1.5f, 8, JobTier.EXPERT, 1000, 4, "Interpreting complex data patterns."),
+        JobModel("security_analyst", "Security Analyst", "🛡️", 110, 2.0f, 1.4f, 15, JobTier.EXPERT, 1500, 4, "Protecting corporate networks."),
+        JobModel("technician", "Maintenance Tech", "☢️", 150, 2.5f, 3.0f, 10, JobTier.EXPERT, 2000, 5, "Critical maintenance in high-risk zones."),
+        
+        // ELITE TIER
+        JobModel("consultant", "Strategic Consultant", "🏴‍☠️", 250, 3.5f, 2.5f, 20, JobTier.ELITE, 5000, 5, "High-stakes corporate troubleshooting."),
+        JobModel("architect", "Systems Architect", "🏗️", 200, 1.5f, 1.2f, 25, JobTier.ELITE, 4000, 3, "Designing large-scale infrastructure."),
+        
+        // EXECUTIVE TIER
+        JobModel("ceo", "Corporate CEO", "🏢", 1200, 5.0f, 1.0f, 50, JobTier.EXECUTIVE, 50000, 1, "Leading a multi-sector mega-corporation."),
+        JobModel("investor", "Shadow Investor", "🏦", 850, 4.0f, 1.2f, 40, JobTier.EXECUTIVE, 25000, 2, "Controlling city-wide financial flows.")
+    )
+
+    fun getJob(id: String): JobModel? = allJobs.find { it.id == id }
+}
+
+@Serializable
+enum class UpgradeCategory {
+    ENERGY, HUNGER, HAPPINESS, ECONOMY, SLEEP
+}
+
+@Serializable
+data class UpgradeModel(
+    val id: String,
+    val name: String,
+    val description: String,
+    val category: UpgradeCategory,
+    val currentLevel: Int = 0,
+    val maxLevel: Int = 10,
+    val baseCost: Int = 100,
+    val costMultiplier: Float = 1.5f
+) {
+    fun getNextLevelCost(): Int {
+        return (baseCost * Math.pow(costMultiplier.toDouble(), currentLevel.toDouble())).toInt()
+    }
+    
+    fun isMaxLevel(): Boolean = currentLevel >= maxLevel
+}
+
+object UpgradeRegistry {
+    val allUpgrades = listOf(
+        // --- ENERGY ---
+        UpgradeModel(
+            id = "energy_regen",
+            name = "Stellar Recharge",
+            description = "Increases energy regeneration while sleeping.",
+            category = UpgradeCategory.ENERGY,
+            baseCost = 150
+        ),
+        UpgradeModel(
+            id = "energy_decay",
+            name = "Endurance Training",
+            description = "Reduces energy decay while awake.",
+            category = UpgradeCategory.ENERGY,
+            baseCost = 200
+        ),
+        
+        // --- HUNGER ---
+        UpgradeModel(
+            id = "hunger_decay",
+            name = "Slow Metabolism",
+            description = "Reduces hunger decay rate.",
+            category = UpgradeCategory.HUNGER,
+            baseCost = 100
+        ),
+        UpgradeModel(
+            id = "food_efficiency",
+            name = "Gourmet Palate",
+            description = "Increases hunger restored from food.",
+            category = UpgradeCategory.HUNGER,
+            baseCost = 250
+        ),
+
+        // --- HAPPINESS ---
+        UpgradeModel(
+            id = "happiness_decay",
+            name = "Cheerfulness",
+            description = "Reduces happiness decay rate.",
+            category = UpgradeCategory.HAPPINESS,
+            baseCost = 120
+        ),
+        UpgradeModel(
+            id = "toy_efficiency",
+            name = "Playful Spirit",
+            description = "Increases happiness gain from toys.",
+            category = UpgradeCategory.HAPPINESS,
+            baseCost = 300
+        ),
+
+        // --- ECONOMY ---
+        UpgradeModel(
+            id = "minigame_reward",
+            name = "Lucky Streak",
+            description = "Increases coins earned from minigames.",
+            category = UpgradeCategory.ECONOMY,
+            baseCost = 500,
+            costMultiplier = 2.0f
+        ),
+        UpgradeModel(
+            id = "passive_income",
+            name = "Investment Fund",
+            description = "Earn coins passively over time.",
+            category = UpgradeCategory.ECONOMY,
+            baseCost = 1000,
+            costMultiplier = 2.5f
+        ),
+
+        // --- SLEEP ---
+        UpgradeModel(
+            id = "sleep_quality",
+            name = "Deep Sleep",
+            description = "Reduces hunger decay while sleeping.",
+            category = UpgradeCategory.SLEEP,
+            baseCost = 200
+        ),
+        UpgradeModel(
+            id = "fast_wake",
+            name = "Quick Starter",
+            description = "Increases happiness gain upon waking up.",
+            category = UpgradeCategory.SLEEP,
+            baseCost = 150
+        )
+    )
 }
