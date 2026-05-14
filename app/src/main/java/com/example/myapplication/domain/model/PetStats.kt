@@ -51,10 +51,33 @@ data class PetStats(
         )
     }
 
+    /**
+     * Applies a [StatEffect] to current stats and returns the clamped result.
+     */
+    fun applyEffect(effect: StatEffect): PetStats {
+        return copy(
+            hunger = hunger + effect.hungerChange,
+            energy = energy + effect.energyChange,
+            happiness = happiness + effect.happinessChange,
+            health = health + effect.healthChange,
+            stress = stress + effect.stressChange,
+            social = social + effect.socialChange,
+            intelligence = intelligence + effect.intelligenceChange,
+            fitness = fitness + effect.fitnessChange,
+            comfort = comfort + effect.comfortChange
+        ).clamped()
+    }
+
     // Helper for UI to get display integer safely. 
     // Uses roundToInt() to ensure 99.9f becomes 100.
     fun displayHunger() = (hunger.takeIf { it.isFinite() } ?: 0f).roundToInt().coerceIn(0, 100)
     fun displayEnergy() = (energy.takeIf { it.isFinite() } ?: 0f).roundToInt().coerceIn(0, 100)
     fun displayHappiness() = (happiness.takeIf { it.isFinite() } ?: 0f).roundToInt().coerceIn(0, 100)
     fun displayHealth() = (health.takeIf { it.isFinite() } ?: 0f).roundToInt().coerceIn(0, 100)
+
+    // Status Helpers
+    fun isStarving() = hunger <= 10f
+    fun isExhausted() = energy <= 10f
+    fun isDepressed() = happiness <= 20f
+    fun isSick() = health <= 20f
 }

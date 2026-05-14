@@ -1,6 +1,7 @@
 package com.example.myapplication.domain.simulation
 
 import com.example.myapplication.domain.model.*
+import com.example.myapplication.domain.simulation.SimulationConstants as SC
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -16,20 +17,6 @@ class SimulationEngine @Inject constructor(
     private val brainEngine: BrainEngine
 ) {
 
-    companion object {
-        // BELIEVABLE DECAY (Per Hour) - Rebalanced for slow, natural progression
-        private const val AWAKE_HUNGER_DECAY = 15.0f   // ~6.6h to empty
-        private const val AWAKE_ENERGY_DECAY = 12.0f   // ~8.3h to empty
-        private const val AWAKE_HAPPINESS_DECAY = 25.0f // REBALANCED: ~4h to empty (was 10.0f)
-        
-        // SLEEP REBALANCE (Per Hour)
-        private const val SLEEP_ENERGY_RECOVERY = 25.0f // ~4h to full
-        private const val SLEEP_HUNGER_DECAY = 8.0f     
-        private const val SLEEP_HAPPINESS_DECAY = 5.0f  
-        
-        private const val FULL_ENERGY = 100.0f
-    }
-
     fun updateState(
         pet: PetModel, 
         world: WorldState, 
@@ -43,7 +30,7 @@ class SimulationEngine @Inject constructor(
         if (elapsedMillis <= 0) return pet
 
         // Clamp simulation jump to prevent massive stat drains (max 24h)
-        val maxJumpMillis = TimeUnit.HOURS.toMillis(24)
+        val maxJumpMillis = TimeUnit.HOURS.toMillis(SC.MAX_SIMULATION_JUMP_HOURS)
         val sanitizedElapsedMillis = elapsedMillis.coerceAtMost(maxJumpMillis)
         val elapsedHours = sanitizedElapsedMillis.toFloat() / TimeUnit.HOURS.toMillis(1)
         
@@ -54,7 +41,7 @@ class SimulationEngine @Inject constructor(
         var newStats = pet.stats
         expiredModifiers.forEach { mod ->
             mod.sideEffect?.let { side ->
-                newStats = applySideEffect(newStats, side)
+                newStats = newStats.applyEffect(side)
                 Timber.i("Simulation: Buff expired, applying side effect for ${mod.name}")
             }
         }
@@ -114,12 +101,12 @@ class SimulationEngine @Inject constructor(
         )
 
         // AUTO-WAKE AT 100%
-        if (isSleeping && (newStats.energy >= FULL_ENERGY)) {
+        if (isSleeping && (newStats.energy >= SC.MAX_STAT_VALUE)) {
             Timber.i("Simulation: Companion fully rested. Waking up.")
             isSleeping = false
             newStats = newStats.copy(
-                energy = FULL_ENERGY,
-                happiness = (newStats.happiness + 10f).coerceAtMost(100f)
+                energy = SC.MAX_STAT_VALUE,
+                happiness = (newStats.happiness + 10f).coerceAtMost(SC.MAX_STAT_VALUE)
             )
         } 
         
@@ -171,7 +158,7 @@ class SimulationEngine @Inject constructor(
         ).clamped()
         
         val updatedEmployment = pet.employment.copy(
-            performance = (pet.employment.performance + 1.0f).coerceAtMost(100f),
+            performance = (pet.employment.performance + 1.0f).coerceAtMost(SC.MAX_STAT_VALUE),
             experience = pet.employment.experience + 1
         )
         
@@ -183,18 +170,7 @@ class SimulationEngine @Inject constructor(
     }
 
     fun applyItemEffect(stats: PetStats, item: ItemModel): PetStats {
-        val effect = item.effect
-        return stats.copy(
-            hunger = stats.hunger + effect.hungerChange,
-            energy = stats.energy + effect.energyChange,
-            happiness = stats.happiness + effect.happinessChange,
-            health = stats.health + effect.healthChange,
-            stress = stats.stress + effect.stressChange,
-            social = stats.social + effect.socialChange,
-            intelligence = stats.intelligence + effect.intelligenceChange,
-            fitness = stats.fitness + effect.fitnessChange,
-            comfort = stats.comfort + effect.comfortChange
-        ).clamped()
+        return stats.applyEffect(item.effect)
     }
 
     fun getMinigameCost(): StatEffect {
@@ -218,10 +194,10 @@ class SimulationEngine @Inject constructor(
 
         // Performance Decay
         val baseDecay = 5.0f * job.difficulty // 5% base per hour
-        val statPenalty = (100f - stats.energy) / 50f + (100f - stats.happiness) / 50f
+        val statPenalty = (SC.MAX_STAT_VALUE - stats.energy) / 50f + (SC.MAX_STAT_VALUE - stats.happiness) / 50f
         val performanceDecay = baseDecay + statPenalty
         
-        val newPerformance = (state.performance - performanceDecay * hours).coerceIn(0f, 100f)
+        val newPerformance = (state.performance - performanceDecay * hours).coerceIn(SC.MIN_STAT_VALUE, SC.MAX_STAT_VALUE)
         
         // Salary Calculation
         val payMult = when {
@@ -251,20 +227,6 @@ class SimulationEngine @Inject constructor(
             totalEarned = state.totalEarned + earned,
             isWarningsIssued = newPerformance < 30f
         ) to earned
-    }
-
-    private fun applySideEffect(stats: PetStats, side: StatEffect): PetStats {
-        return stats.copy(
-            hunger = stats.hunger + side.hungerChange,
-            energy = stats.energy + side.energyChange,
-            happiness = stats.happiness + side.happinessChange,
-            health = stats.health + side.healthChange,
-            stress = stats.stress + side.stressChange,
-            social = stats.social + side.socialChange,
-            intelligence = stats.intelligence + side.intelligenceChange,
-            fitness = stats.fitness + side.fitnessChange,
-            comfort = stats.comfort + side.comfortChange
-        ).clamped()
     }
 
     private fun calculateEquipmentEffects(equipped: Map<ItemCategory, String>): StatEffect {
@@ -360,13 +322,13 @@ class SimulationEngine @Inject constructor(
         val workMultiplier = if (isWorking) 1.5f else 1.0f
 
         // BELIEVABLE INFLUENCES (THINGS THAT DECREASE HAPPINESS)
-        val hungerPenalty = if (stats.hunger < 20f) (20f - stats.hunger) / 5f else 0f
-        val energyPenalty = if (stats.energy < 20f) (20f - stats.energy) / 5f else 0f
+        val hungerPenalty = if (stats.hunger < SC.CRITICAL_NEED_THRESHOLD) (SC.CRITICAL_NEED_THRESHOLD - stats.hunger) / 5f else 0f
+        val energyPenalty = if (stats.energy < SC.CRITICAL_NEED_THRESHOLD) (SC.CRITICAL_NEED_THRESHOLD - stats.energy) / 5f else 0f
         val stressPenalty = stats.stress / 25f
-        val lonelinessPenalty = if (stats.social < 20f) (20f - stats.social) / 10f else 0f
+        val lonelinessPenalty = if (stats.social < SC.CRITICAL_NEED_THRESHOLD) (SC.CRITICAL_NEED_THRESHOLD - stats.social) / 10f else 0f
         
         val totalHappinessPenalty = hungerPenalty + energyPenalty + stressPenalty + lonelinessPenalty
-        val happinessModifier = 1.0f + (totalHappinessPenalty * 0.5f)
+        val happinessModifier = 1.0f + (totalHappinessPenalty * SC.HAPPINESS_PENALTY_MULTIPLIER)
 
         return if (isSleeping) {
             val energyRegenMult = (multipliers["energy_regen"] ?: 1.0f) * (1.5f - temperament.laziness * 0.5f)
@@ -374,20 +336,20 @@ class SimulationEngine @Inject constructor(
             val homeSleepBonus = (equipmentEffect.comfortChange.coerceAtLeast(0f) * 0.2f)
             
             stats.copy(
-                energy = stats.energy + ((SLEEP_ENERGY_RECOVERY + homeSleepBonus) * energyRegenMult * hours),
-                hunger = stats.hunger - (SLEEP_HUNGER_DECAY * hours * 0.5f),
-                happiness = stats.happiness - (SLEEP_HAPPINESS_DECAY * hours * 0.2f)
+                energy = stats.energy + ((SC.SLEEP_ENERGY_RECOVERY + homeSleepBonus) * energyRegenMult * hours),
+                hunger = stats.hunger - (SC.SLEEP_HUNGER_DECAY * hours),
+                happiness = stats.happiness - (SC.SLEEP_HAPPINESS_DECAY * hours)
             )
         } else {
-            val exhaustionFactor = if (stats.hunger <= 0f) 2.0f else 1.0f
+            val exhaustionFactor = if (stats.hunger <= SC.MIN_STAT_VALUE) 2.0f else 1.0f
             
             // Equipment provides passive happiness stability
             val passiveHappinessBonus = equipmentEffect.happinessChange * hours
 
             stats.copy(
-                energy = stats.energy - (AWAKE_ENERGY_DECAY * energyDecayMult * hours * exhaustionFactor * workMultiplier),
-                hunger = stats.hunger - (AWAKE_HUNGER_DECAY * hungerDecayMult * hours * workMultiplier),
-                happiness = stats.happiness - (AWAKE_HAPPINESS_DECAY * happinessDecayMult * hours * workMultiplier * happinessModifier) + passiveHappinessBonus,
+                energy = stats.energy - (SC.AWAKE_ENERGY_DECAY * energyDecayMult * hours * exhaustionFactor * workMultiplier),
+                hunger = stats.hunger - (SC.AWAKE_HUNGER_DECAY * hungerDecayMult * hours * workMultiplier),
+                happiness = stats.happiness - (SC.AWAKE_HAPPINESS_DECAY * happinessDecayMult * hours * workMultiplier * happinessModifier) + passiveHappinessBonus,
                 stress = stats.stress + (equipmentEffect.stressChange * hours) // Passive stress reduction from home
             )
         }
