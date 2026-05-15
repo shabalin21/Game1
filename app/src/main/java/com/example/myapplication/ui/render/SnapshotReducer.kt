@@ -23,10 +23,13 @@ class SnapshotReducer @Inject constructor(
             petName = pet.name,
             stats = DisplayStats(
                 hunger = pet.stats.hunger,
+                thirst = pet.stats.thirst,
                 energy = pet.stats.energy,
                 happiness = pet.stats.happiness,
                 stress = pet.psychology.stress,
                 health = pet.stats.health,
+                hygiene = pet.stats.hygiene,
+                mentalEnergy = pet.stats.mentalEnergy,
                 motivation = pet.psychology.motivation,
                 burnout = pet.psychology.burnout
             ),
@@ -65,7 +68,7 @@ class SnapshotReducer @Inject constructor(
 
     private fun createDefaultRenderState() = RenderState(
         petName = "...",
-        stats = DisplayStats(0f, 0f, 0f, 0f, 0f, 0f, 0f),
+        stats = DisplayStats(0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f),
         atmosphere = com.example.myapplication.domain.simulation.atmosphere.AtmosphereState(),
         world = DisplayWorld("...", "...", "..."),
         activeBuffs = emptyList(),

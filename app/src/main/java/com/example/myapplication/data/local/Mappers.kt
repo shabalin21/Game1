@@ -87,6 +87,16 @@ fun PetEntity.toDomain(json: Json): PetModel {
             } catch (e: Exception) {
                 MissionState()
             },
+            phone = try {
+                json.decodeFromString(phoneJson)
+            } catch (e: Exception) {
+                PhoneState()
+            },
+            gym = try {
+                json.decodeFromString(gymJson)
+            } catch (e: Exception) {
+                com.example.myapplication.domain.gym.model.GymState()
+            },
             collectionLog = try {
                 json.decodeFromString(collectionLogJson)
             } catch (e: Exception) {
@@ -124,6 +134,8 @@ fun PetModel.toEntity(json: Json): PetEntity {
         ownedAssetsJson = json.encodeToString(ownedAssets),
         assetCostBasisJson = json.encodeToString(assetCostBasis),
         missionsJson = json.encodeToString(missions),
+        phoneJson = json.encodeToString(phone),
+        gymJson = json.encodeToString(gym),
         collectionLogJson = json.encodeToString(collectionLog)
     )
 }

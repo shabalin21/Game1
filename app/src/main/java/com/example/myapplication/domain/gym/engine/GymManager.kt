@@ -34,9 +34,28 @@ class GymManager @Inject constructor(
             stress = result.statsChanged["stress"] ?: pet.stats.stress,
             confidence = result.statsChanged["confidence"] ?: pet.stats.confidence,
             discipline = result.statsChanged["discipline"] ?: pet.stats.discipline,
+            fitness = result.statsChanged["fitness"] ?: pet.stats.fitness,
             emotionalStability = result.statsChanged["emotionalStability"] ?: pet.stats.emotionalStability
         )
 
-        petRepository.savePetState(pet.copy(stats = updatedStats.clamped()))
+        // Task 4: Update Gym State
+        val hoursSinceLast = (System.currentTimeMillis() - pet.gym.lastWorkoutTimestamp) / (1000f * 60 * 60)
+        val isStreakMaintained = hoursSinceLast in 12f..36f
+        
+        val newStreak = if (isStreakMaintained) pet.gym.workoutStreak + 1 else if (hoursSinceLast > 48f) 0 else pet.gym.workoutStreak
+        val fatigueGain = when(exercise.category) {
+            TrainingCategory.STRENGTH -> 20f
+            TrainingCategory.CARDIO -> 15f
+            TrainingCategory.MIND_RECOVERY -> -10f
+        }
+
+        val updatedGym = pet.gym.copy(
+            fatigue = (pet.gym.fatigue + fatigueGain).coerceIn(0f, 100f),
+            workoutStreak = newStreak,
+            lastWorkoutTimestamp = System.currentTimeMillis(),
+            discipline = (pet.gym.discipline + 0.5f + (newStreak * 0.1f)).coerceAtMost(100f)
+        )
+
+        petRepository.savePetState(pet.copy(stats = updatedStats.clamped(), gym = updatedGym))
     }
 }

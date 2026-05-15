@@ -309,7 +309,7 @@ fun SecretRoomContents(cheatManager: CheatManager) {
 fun PlayerCheats(cheatManager: CheatManager) {
     CheatSection("BIOMETRIC_OVERRIDE") {
         Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-            val stats = listOf("Hunger", "Energy", "Happiness", "Health", "Stress", "Social")
+            val stats = listOf("Hunger", "Thirst", "Energy", "Hygiene", "Mental", "Happiness", "Health", "Stress", "Social")
             stats.forEach { stat ->
                 StatCheatRow(stat, onSet = { cheatManager.setStat(stat, it) })
             }

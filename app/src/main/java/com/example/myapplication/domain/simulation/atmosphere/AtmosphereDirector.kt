@@ -30,13 +30,28 @@ class AtmosphereDirector @Inject constructor() {
         // 3. Vignette based on stress/loneliness
         val vignette = (psychology.stress / 200f) + (psychology.loneliness / 200f)
 
-        // 4. Saturation based on happiness
-        val saturation = 0.5f + (pet.stats.happiness / 200f)
+        // 4. Saturation based on happiness and time
+        val timeSaturationMult = if (world.timeOfDay == TimeOfDay.NIGHT) 0.7f else 1.0f
+        val saturation = (0.5f + (pet.stats.happiness / 200f)) * timeSaturationMult
 
-        // 5. Audio Layers
+        // 5. Brightness and Lighting Overlay based on Time
+        val brightness = when(world.timeOfDay) {
+            TimeOfDay.NIGHT -> 0.6f
+            TimeOfDay.DUSK, TimeOfDay.DAWN -> 0.8f
+            else -> 1.0f
+        }
+        
+        val lightingAlpha = when(world.timeOfDay) {
+            TimeOfDay.NIGHT -> 0.4f
+            TimeOfDay.DUSK, TimeOfDay.DAWN -> 0.2f
+            else -> 0f
+        }
+
+        // 6. Audio Layers
         val audioLayers = mutableListOf<String>()
         if (world.weather == Weather.RAINY) audioLayers.add("rain_ambient")
         if (world.weather == Weather.STORMY) audioLayers.add("thunder_low")
+        if (world.timeOfDay == TimeOfDay.NIGHT) audioLayers.add("city_ambience_night")
         if (psychology.loneliness > 60f) audioLayers.add("melancholic_pad")
 
         return AtmosphereState(
@@ -44,6 +59,8 @@ class AtmosphereDirector @Inject constructor() {
             blurIntensity = blur,
             vignetteIntensity = vignette,
             saturation = saturation,
+            brightness = brightness,
+            lightingOverlayAlpha = lightingAlpha,
             audioLayers = audioLayers
         )
     }

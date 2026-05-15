@@ -31,5 +31,7 @@ data class PetEntity(
     val ownedAssetsJson: String = "{}",
     val assetCostBasisJson: String = "{}",
     val missionsJson: String = "{}",
+    val phoneJson: String = "{}",
+    val gymJson: String = "{}",
     val collectionLogJson: String = "[]"
 )

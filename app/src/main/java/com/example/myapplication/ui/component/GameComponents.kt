@@ -4,6 +4,7 @@ import androidx.compose.animation.core.*
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -86,31 +87,33 @@ fun AnimatedStatBar(
         label = "StatProgress"
     )
 
-    Column(modifier = modifier.fillMaxWidth()) {
+    Column(modifier = modifier) {
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.Bottom
         ) {
             Text(
                 text = label,
                 style = MaterialTheme.typography.labelSmall,
-                color = Color.White.copy(alpha = 0.6f)
+                color = Color.White.copy(alpha = 0.4f),
+                fontWeight = FontWeight.Bold,
+                letterSpacing = 1.sp
             )
             Text(
-                text = "${value.roundToInt()}%",
+                text = "${value.roundToInt()}",
                 style = MaterialTheme.typography.labelSmall,
-                color = color,
-                fontWeight = FontWeight.SemiBold
+                color = color.copy(alpha = 0.8f),
+                fontWeight = FontWeight.Black
             )
         }
-        Spacer(modifier = Modifier.height(Spacing.xs))
+        Spacer(modifier = Modifier.height(6.dp))
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(6.dp)
-                .clip(RoundedCornerShape(3.dp))
-                .background(Color.White.copy(alpha = 0.05f))
+                .height(4.dp)
+                .clip(CircleShape)
+                .background(Color.White.copy(alpha = 0.03f))
         ) {
             Box(
                 modifier = Modifier
@@ -118,7 +121,7 @@ fun AnimatedStatBar(
                     .fillMaxHeight()
                     .background(
                         Brush.horizontalGradient(
-                            listOf(color.copy(alpha = 0.6f), color)
+                            listOf(color.copy(alpha = 0.3f), color)
                         )
                     )
             )

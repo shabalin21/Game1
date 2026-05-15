@@ -120,10 +120,12 @@ class ProcessSimulationTickUseCase @Inject constructor(
             cheatManager.frozenStats.value.forEach { (statName, value) ->
                 overridden = when (statName.lowercase()) {
                     "hunger" -> overridden.copy(hunger = value)
+                    "thirst" -> overridden.copy(thirst = value)
                     "energy" -> overridden.copy(energy = value)
                     "happiness" -> overridden.copy(happiness = value)
                     "health" -> overridden.copy(health = value)
                     "hygiene" -> overridden.copy(hygiene = value)
+                    "mental" -> overridden.copy(mentalEnergy = value)
                     "social" -> overridden.copy(social = value)
                     "stress" -> overridden.copy(stress = value)
                     else -> overridden

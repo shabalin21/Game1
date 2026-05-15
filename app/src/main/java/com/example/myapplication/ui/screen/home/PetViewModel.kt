@@ -31,6 +31,7 @@ class PetViewModel @Inject constructor(
     private val marketEngine: MarketSimulationEngine,
     private val socialManager: SocialManager,
     private val snapshotReducer: SnapshotReducer,
+    val musicDirector: com.example.myapplication.ui.audio.MusicDirector,
     val cheatManager: CheatManager,
     private val petRepository: PetRepository // Added for manual tick logic
 ) : ViewModel() {

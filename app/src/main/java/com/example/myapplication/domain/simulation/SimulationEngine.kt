@@ -73,7 +73,8 @@ class SimulationEngine @Inject constructor(
             pet.psychology.temperament,
             pet.employment.jobId != null,
             equipmentEffect,
-            world
+            world,
+            pet.equippedItems
         )
         
         // Apply active modifier accumulation (per hour) - Legacy System
@@ -144,19 +145,29 @@ class SimulationEngine @Inject constructor(
         // AUTO-EVALUATE BUDDY ACTIVITY
         val activity = brainEngine.evaluateActivity(pet.copy(stats = newStats, emotionState = newEmotion), world, hour)
 
+        // Task 5: Burnout impact
+        val burnoutGain = if (newStats.stress > 70f) 5f * elapsedHours else 0.5f * elapsedHours
+        val finalPsychology = nextPsychology.copy(
+            burnout = (nextPsychology.burnout + burnoutGain).coerceIn(0f, 100f),
+            currentActivity = activity.type
+        )
+
         // 3. CALCULATE LIFESTYLE POINTS (Unified Progression)
         val wealthFactor = (pet.employment.totalEarned / 1000f).coerceAtMost(50f)
         val happinessFactor = (newStats.happiness / 10f).coerceAtMost(10f)
         val socialFactor = (pet.social.followers / 500f).coerceAtMost(40f)
         
-        val pointsEarned = ((wealthFactor + happinessFactor + socialFactor) * elapsedHours).toLong()
+        // Mental exhaustion penalty (Task 1)
+        val mentalFactor = (newStats.mentalEnergy / 100f).coerceIn(0.2f, 1.0f)
+        
+        val pointsEarned = ((wealthFactor + happinessFactor + socialFactor) * elapsedHours * mentalFactor).toLong()
 
         return pet.copy(
             stats = newStats.clamped(),
             emotionState = newEmotion,
             lifestylePoints = pet.lifestylePoints + pointsEarned,
             isSleeping = isSleeping,
-            psychology = nextPsychology.copy(currentActivity = activity.type),
+            psychology = finalPsychology,
             employment = newEmployment,
             activeModifiers = activeTimed,
             modifiers = activeModifiers,
@@ -212,32 +223,45 @@ class SimulationEngine @Inject constructor(
         val jobId = state.jobId ?: return state to 0
         val job = JobRegistry.getJob(jobId) ?: return state.copy(jobId = null) to 0
 
+        // Task 5: Shift and Routine Logic
+        val currentHour = ((currentTime / (1000 * 60 * 60)) % 24).toInt()
+        val isInShift = currentHour in state.shiftStartHour until state.shiftEndHour
+        
+        if (!isInShift) {
+            // Passive recovery outside shifts
+            return state.copy(performance = (state.performance + 2f * hours).coerceAtMost(100f)) to 0
+        }
+
         // Performance Decay
         val baseDecay = 5.0f * job.difficulty // 5% base per hour
-        val statPenalty = (SC.MAX_STAT_VALUE - stats.energy) / 50f + (SC.MAX_STAT_VALUE - stats.happiness) / 50f
+        
+        // Task 1: Hunger penalty to work efficiency
+        val hungerPenalty = if (stats.hunger < SC.CRITICAL_NEED_THRESHOLD) (SC.CRITICAL_NEED_THRESHOLD - stats.hunger) / 10f else 0f
+        
+        val statPenalty = (SC.MAX_STAT_VALUE - stats.energy) / 50f + (SC.MAX_STAT_VALUE - stats.happiness) / 50f + hungerPenalty
         val performanceDecay = baseDecay + statPenalty
         
         val newPerformance = (state.performance - performanceDecay * hours).coerceIn(SC.MIN_STAT_VALUE, SC.MAX_STAT_VALUE)
         
-        // Salary Calculation
+        // Salary Calculation (Salary scaling based on performance)
         val payMult = when {
-            newPerformance >= 80f -> 1.0f
-            newPerformance >= 60f -> 0.7f
-            newPerformance >= 40f -> 0.4f
-            else -> 0.1f
+            newPerformance >= 80f -> 1.2f
+            newPerformance >= 60f -> 1.0f
+            newPerformance >= 40f -> 0.7f
+            else -> 0.3f
         }
         val earned = (job.hourlyPay * payMult * hours).toInt()
         
-        // Experience gain (10 XP per hour worked if performance > 40%)
+        // Experience gain
         val xpGain = if (newPerformance > 40f) (10f * hours).toInt() else 0
 
         // Firing Logic
-        val isFired = newPerformance < 5f // Threshold
+        val isFired = newPerformance < 10f // Threshold
         if (isFired) {
             return state.copy(
                 jobId = null,
                 performance = 0f,
-                firedCooldownTimestamp = currentTime + TimeUnit.HOURS.toMillis(1)
+                firedCooldownTimestamp = currentTime + TimeUnit.HOURS.toMillis(24)
             ) to earned
         }
 
@@ -325,8 +349,19 @@ class SimulationEngine @Inject constructor(
         temperament: Temperament = Temperament.default(),
         isWorking: Boolean = false,
         equipmentEffect: StatEffect = StatEffect(),
-        worldState: WorldState
+        worldState: WorldState,
+        equippedItems: Map<ItemCategory, String> = emptyMap()
     ): PetStats {
+        // Task 8: Quality Modifiers
+        var totalComfort = 1.0f
+        var totalUtility = 1.0f
+        equippedItems.values.forEach { itemId ->
+            ItemRegistry.getItem(itemId)?.let { item ->
+                totalComfort *= item.comfortModifier
+                totalUtility *= item.utilityModifier
+            }
+        }
+
         // ENERGY DECAY
         val energyDecayBase = if (isSleeping) 0f else SC.AWAKE_ENERGY_DECAY
         val energyDecayRate = ModifierPipeline.calculate(
@@ -373,12 +408,18 @@ class SimulationEngine @Inject constructor(
         val totalHappinessPenalty = hungerPenalty + energyPenalty + hygienePenalty + stressPenalty + lonelinessPenalty
         val happinessModifier = 1.0f + (totalHappinessPenalty * SC.HAPPINESS_PENALTY_MULTIPLIER)
 
+        // Task 1: Sleep interaction - low energy (lack of sleep) increases stress
+        val sleepStress = if (stats.energy < SC.CRITICAL_NEED_THRESHOLD) (SC.CRITICAL_NEED_THRESHOLD - stats.energy) / 2f * hours else 0f
+
+        // Task 1: Hygiene interaction - bad hygiene increases social penalty
+        val hygieneSocialPenalty = if (stats.hygiene < SC.CRITICAL_NEED_THRESHOLD) (SC.CRITICAL_NEED_THRESHOLD - stats.hygiene) / 5f else 0f
+
         return if (isSleeping) {
             val energyRegenBase = SC.SLEEP_ENERGY_RECOVERY
             val energyRegenRate = ModifierPipeline.calculate(
                 energyRegenBase,
                 modifiers.filter { it.tag == ModifierRegistry.REGEN_ENERGY }
-            ) * (1.5f - temperament.laziness * 0.5f)
+            ) * (1.5f - temperament.laziness * 0.5f) * totalComfort
 
             // Homes improve sleep recovery
             val homeSleepBonus = (equipmentEffect.comfortChange.coerceAtLeast(0f) * 0.2f)
@@ -386,8 +427,10 @@ class SimulationEngine @Inject constructor(
             stats.copy(
                 energy = stats.energy + ((energyRegenRate + homeSleepBonus) * hours),
                 hunger = stats.hunger - (hungerDecayRate * hours),
+                thirst = stats.thirst - (SC.SLEEP_THIRST_DECAY * hours),
                 happiness = stats.happiness - (happinessDecayRate * hours),
-                hygiene = stats.hygiene - (SC.SLEEP_HYGIENE_DECAY * hours)
+                hygiene = stats.hygiene - (SC.SLEEP_HYGIENE_DECAY * hours),
+                mentalEnergy = stats.mentalEnergy + (SC.SLEEP_MENTAL_ENERGY_RECOVERY * hours * totalComfort)
             )
         } else {
             val exhaustionFactor = if (stats.hunger <= SC.MIN_STAT_VALUE) 2.0f else 1.0f
@@ -400,14 +443,16 @@ class SimulationEngine @Inject constructor(
             val bondGrowth = if (stats.happiness > 80f && stats.hunger > 50f) SC.BOND_GROWTH_BASE * hours else 0f
 
             stats.copy(
-                energy = stats.energy - (energyDecayRate * hours * exhaustionFactor * workMultiplier * weatherMultiplier),
+                energy = stats.energy - (energyDecayRate * hours * exhaustionFactor * workMultiplier * weatherMultiplier / totalUtility),
                 hunger = stats.hunger - (hungerDecayRate * hours * workMultiplier),
+                thirst = stats.thirst - (SC.AWAKE_THIRST_DECAY * hours * workMultiplier),
                 happiness = stats.happiness - (happinessDecayRate * hours * workMultiplier * happinessModifier) + passiveHappinessBonus,
                 hygiene = stats.hygiene - (SC.AWAKE_HYGIENE_DECAY * hours),
-                social = stats.social - (SC.AWAKE_SOCIAL_DECAY * hours),
-                stress = stats.stress + (equipmentEffect.stressChange * hours) + weatherStress,
+                social = stats.social - ((SC.AWAKE_SOCIAL_DECAY + hygieneSocialPenalty) * hours),
+                stress = stats.stress + (equipmentEffect.stressChange * hours) + weatherStress + sleepStress,
                 trust = stats.trust + trustGrowth,
-                bond = stats.bond + bondGrowth
+                bond = stats.bond + bondGrowth,
+                mentalEnergy = stats.mentalEnergy - (SC.AWAKE_MENTAL_ENERGY_DECAY * hours * workMultiplier / totalUtility)
             )
         }
     }

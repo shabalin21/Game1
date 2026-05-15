@@ -20,6 +20,7 @@ data class GameState(
 data class WorldState(
     val timeOfDay: TimeOfDay = TimeOfDay.DAY,
     val weather: Weather = Weather.SUNNY,
+    val currentDistrict: District = District.RESIDENTIAL,
     val temperature: Float = 22f, // Celsius
     val cleanliness: Float = 100f, // 0 to 100
     val lastUpdateTimestamp: Long = System.currentTimeMillis()

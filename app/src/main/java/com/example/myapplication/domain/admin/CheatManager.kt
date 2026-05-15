@@ -79,10 +79,13 @@ class CheatManager @Inject constructor(
             val pet = petEntity.toDomain(json)
             val newStats = when (name.lowercase()) {
                 "hunger" -> pet.stats.copy(hunger = value)
+                "thirst" -> pet.stats.copy(thirst = value)
                 "energy" -> pet.stats.copy(energy = value)
+                "hygiene" -> pet.stats.copy(hygiene = value)
                 "happiness" -> pet.stats.copy(happiness = value)
                 "health" -> pet.stats.copy(health = value)
                 "stress" -> pet.stats.copy(stress = value)
+                "mental" -> pet.stats.copy(mentalEnergy = value)
                 "sanity" -> pet.stats.copy(emotionalStability = value)
                 "focus" -> pet.stats.copy(attention = value)
                 else -> pet.stats
@@ -98,12 +101,15 @@ class CheatManager @Inject constructor(
             val pet = petEntity.toDomain(json)
             val fullStats = PetStats(
                 hunger = 100f,
+                thirst = 100f,
                 energy = 100f,
+                hygiene = 100f,
                 happiness = 100f,
                 health = 100f,
                 stress = 0f,
                 attention = 100f,
-                emotionalStability = 100f
+                emotionalStability = 100f,
+                mentalEnergy = 100f
             )
             petDao.insertPet(pet.copy(stats = fullStats).toEntity(json))
             logAdminAction("NEURAL_RESTORATION_COMPLETE")

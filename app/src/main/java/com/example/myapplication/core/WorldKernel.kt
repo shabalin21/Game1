@@ -14,7 +14,9 @@ class WorldKernel @Inject constructor(
     eventBus: EventBus,
     canonicalState: CanonicalState,
     tickSystem: TickSystem,
-    simulationSystems: com.example.myapplication.domain.simulation.SimulationSystems
+    simulationSystems: com.example.myapplication.domain.simulation.SimulationSystems,
+    phoneManager: com.example.myapplication.domain.simulation.phone.PhoneManager,
+    lifeEventManager: com.example.myapplication.domain.simulation.lifeevents.LifeEventManager
 ) {
     private val systems = mutableListOf<KernelSystem>()
     private var isBooted = false
@@ -23,6 +25,8 @@ class WorldKernel @Inject constructor(
         // Define the dependency order
         systems.add(eventBus)           // 1. Messaging first
         systems.add(canonicalState)     // 2. Data model second
+        systems.add(phoneManager)
+        systems.add(lifeEventManager)
         systems.add(simulationSystems)  // 3. Game logic systems
         systems.add(tickSystem)         // 4. Heartbeat last
     }

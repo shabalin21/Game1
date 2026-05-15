@@ -30,10 +30,13 @@ data class RenderState(
 @Serializable
 data class DisplayStats(
     val hunger: Float,
+    val thirst: Float,
     val energy: Float,
     val happiness: Float,
     val stress: Float,
     val health: Float,
+    val hygiene: Float,
+    val mentalEnergy: Float,
     val motivation: Float,
     val burnout: Float
 )

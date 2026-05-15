@@ -65,9 +65,11 @@ fun HomeScreen(
         AtmosphereManager(juiceViewModel.juiceManager.particleEngine)
     }
 
-    // Update Atmosphere (Particles)
-    LaunchedEffect(renderState?.atmosphere, renderState?.isSleeping, settings.graphics.targetFps) {
+    // Update Atmosphere (Particles) and Music
+    LaunchedEffect(renderState, settings.graphics.targetFps) {
         val state = renderState ?: return@LaunchedEffect
+        viewModel.musicDirector.update(state)
+
         var lastTime = withFrameMillis { it }
         val targetFps = settings.graphics.targetFps
         val targetFrameTime = 1f / targetFps
@@ -194,6 +196,15 @@ fun HomeScreen(
                         .background(ambientColor)
                         .blur(atmosphere.blurIntensity.dp)
                 )
+
+                // Task 3: Nighttime Overlay (extra layer for depth)
+                if (state.atmosphere.lightingOverlayAlpha > 0.1f) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(Color.Black.copy(alpha = state.atmosphere.lightingOverlayAlpha * 0.5f))
+                    )
+                }
 
                 // Mood Gradient
                 Box(
@@ -339,26 +350,40 @@ fun HomeScreenContent(
         GlassCard(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(bottom = 16.dp)
+                .padding(bottom = 16.dp),
+            showGlow = true
         ) {
-            Column {
+            Column(modifier = Modifier.padding(8.dp)) {
+                Text(
+                    "BIOMETRICS",
+                    style = MaterialTheme.typography.labelSmall,
+                    color = Color.White.copy(alpha = 0.3f),
+                    fontWeight = FontWeight.Bold,
+                    letterSpacing = 2.sp,
+                    modifier = Modifier.padding(bottom = 16.dp)
+                )
+
                 Row(
                     modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                    horizontalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
-                    AnimatedStatBar(label = "HUNGER", value = state.stats.hunger, color = StatHunger, modifier = Modifier.weight(1f))
-                    AnimatedStatBar(label = "ENERGY", value = state.stats.energy, color = StatEnergy, modifier = Modifier.weight(1f))
-                }
-                Spacer(Modifier.height(8.dp))
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(12.dp)
-                ) {
-                    AnimatedStatBar(label = "STRESS", value = state.stats.stress, color = Color.Red, modifier = Modifier.weight(1f))
-                    AnimatedStatBar(label = "BURNOUT", value = state.stats.burnout, color = Color.Gray, modifier = Modifier.weight(1f))
+                    Column(modifier = Modifier.weight(1f)) {
+                        AnimatedStatBar(label = "HUNGER", value = state.stats.hunger, color = StatHunger)
+                        Spacer(Modifier.height(12.dp))
+                        AnimatedStatBar(label = "THIRST", value = state.stats.thirst, color = Color(0xFF81D4FA))
+                        Spacer(Modifier.height(12.dp))
+                        AnimatedStatBar(label = "MENTAL", value = state.stats.mentalEnergy, color = Color(0xFFCE93D8))
+                    }
+                    Column(modifier = Modifier.weight(1f)) {
+                        AnimatedStatBar(label = "ENERGY", value = state.stats.energy, color = StatEnergy)
+                        Spacer(Modifier.height(12.dp))
+                        AnimatedStatBar(label = "HYGIENE", value = state.stats.hygiene, color = Color(0xFFB2EBF2))
+                        Spacer(Modifier.height(12.dp))
+                        AnimatedStatBar(label = "STRESS", value = state.stats.stress, color = PremiumRed)
+                    }
                 }
 
-                Spacer(modifier = Modifier.height(24.dp))
+                Spacer(modifier = Modifier.height(32.dp))
 
                 Row(
                     modifier = Modifier.fillMaxWidth(),

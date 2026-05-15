@@ -37,12 +37,16 @@ data class ItemModel(
     val sideEffect: StatEffect? = null,
     val unlockLevel: Int = 1,
     val isConsumable: Boolean = true,
+    val durability: Int? = null, // Task 8: Durability for non-consumables
+    val comfortModifier: Float = 1.0f, // Task 8: Better sleep etc
+    val utilityModifier: Float = 1.0f, // Task 8: Better work etc
     val floatValue: Float? = null // For GOLD items: 0.9 to 1.0
 )
 
 @Serializable
 data class StatEffect(
     val hungerChange: Float = 0f,
+    val thirstChange: Float = 0f,
     val energyChange: Float = 0f,
     val happinessChange: Float = 0f,
     val healthChange: Float = 0f,
@@ -51,7 +55,8 @@ data class StatEffect(
     val hygieneChange: Float = 0f,
     val intelligenceChange: Float = 0f,
     val fitnessChange: Float = 0f,
-    val comfortChange: Float = 0f
+    val comfortChange: Float = 0f,
+    val mentalEnergyChange: Float = 0f
 )
 
 /**
@@ -92,10 +97,22 @@ object ItemRegistry {
             buffType = BuffType.ADRENALINE, durationMillis = 1000 * 60 * 8,
             sideEffect = StatEffect(energyChange = -30f, stressChange = 15f)
         ),
+        // Task 8: Cheap Food
+        ItemModel("cheap_ramen", "Instant Ramen", "🍜", "Salts and preservatives.", 10, ItemCategory.PRODUCTS, ItemRarity.COMMON,
+            effect = StatEffect(hungerChange = 20f, healthChange = -5f), comfortModifier = 0.8f
+        ),
 
         // --- 2. CLOTHES (Wearables) ---
         ItemModel("hoodie_black", "Street Hoodie", "🧥", "Simple, warm, and comfortable.", 450, ItemCategory.CLOTHES, ItemRarity.COMMON, 
             effect = StatEffect(happinessChange = 5f, comfortChange = 10f), isConsumable = false
+        ),
+        // Task 8: Premium Bed
+        ItemModel("premium_bed", "Cloud-9 Sleeper", "🛏️", "Next-gen ergonomic design.", 5000, ItemCategory.HOMES, ItemRarity.RARE,
+            comfortModifier = 1.5f, isConsumable = false
+        ),
+        // Task 8: Headphones
+        ItemModel("headphones_pro", "Studio ANC", "🎧", "Immersive silence.", 1200, ItemCategory.ITEMS, ItemRarity.RARE,
+            effect = StatEffect(stressChange = -10f), utilityModifier = 1.1f, isConsumable = false
         ),
         ItemModel("jacket_leather", "Classic Leather Jacket", "🧥", "A timeless style statement.", 1200, ItemCategory.CLOTHES, ItemRarity.RARE, 
             effect = StatEffect(happinessChange = 15f, socialChange = 25f), isConsumable = false
@@ -237,6 +254,10 @@ data class EmploymentState(
     val experience: Int = 0,
     val totalEarned: Int = 0,
     val shiftStartTimestamp: Long = 0,
+    val shiftStartHour: Int = 9,
+    val shiftEndHour: Int = 17,
+    val lastAttendanceTimestamp: Long = 0,
+    val punctualityScore: Float = 100f,
     val isWarningsIssued: Boolean = false,
     val firedCooldownTimestamp: Long = 0
 )

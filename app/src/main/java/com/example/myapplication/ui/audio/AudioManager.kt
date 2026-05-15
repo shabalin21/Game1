@@ -11,11 +11,35 @@ import javax.inject.Singleton
 class AudioManager @Inject constructor(
     @ApplicationContext private val context: Context
 ) {
-    // Placeholder for actual resource IDs
-    // In a real production app, these would be R.raw.feed, R.raw.pet, etc.
-    
     private var musicPlayer: MediaPlayer? = null
     private var ambientPlayer: MediaPlayer? = null
+    private val layers = mutableMapOf<String, MediaPlayer>()
+
+    fun setLayer(id: String, resId: Int, volume: Float) {
+        val player = layers[id]
+        if (player == null) {
+            try {
+                val mp = MediaPlayer.create(context, resId).apply {
+                    isLooping = true
+                    setVolume(volume, volume)
+                    start()
+                }
+                layers[id] = mp
+            } catch (e: Exception) {
+                Timber.e(e, "Failed to start audio layer: $id")
+            }
+        } else {
+            player.setVolume(volume, volume)
+        }
+    }
+
+    fun stopLayer(id: String) {
+        layers[id]?.let {
+            it.stop()
+            it.release()
+        }
+        layers.remove(id)
+    }
 
     fun playSfx(resId: Int) {
         try {

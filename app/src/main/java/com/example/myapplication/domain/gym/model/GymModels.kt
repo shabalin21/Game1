@@ -28,6 +28,17 @@ enum class BuffType {
     STRENGTH_BOOST, CARDIO_ENDURANCE, MENTAL_CLARITY, FATIGUE_DEBUFF
 }
 
+@Serializable
+data class GymState(
+    val fatigue: Float = 0f, // 0 to 100
+    val recoveryRate: Float = 1.0f,
+    val discipline: Float = 0f,
+    val bodyCondition: Float = 50f,
+    val workoutStreak: Int = 0,
+    val lastWorkoutTimestamp: Long = 0,
+    val activeBuffs: List<Buff> = emptyList()
+)
+
 data class WorkoutResult(
     val statsChanged: Map<String, Float>,
     val buffsApplied: List<Buff>,

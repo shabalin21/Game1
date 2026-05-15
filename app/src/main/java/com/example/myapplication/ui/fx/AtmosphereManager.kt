@@ -11,13 +11,20 @@ class AtmosphereManager @Inject constructor(
     private val particleEngine: ParticleEngine
 ) {
     fun getAmbientColor(state: AtmosphereState): Color {
-        return when (state.uiTone) {
+        val baseColor = when (state.uiTone) {
             UiTone.NEUTRAL -> Color.Transparent
             UiTone.WARM -> Color(0xFFFF9E80).copy(alpha = 0.1f)
             UiTone.COLD -> Color(0xFF303F9F).copy(alpha = 0.2f)
             UiTone.MELANCHOLIC -> Color(0xFF546E7A).copy(alpha = 0.15f)
             UiTone.ANXIOUS -> Color(0xFFFF5252).copy(alpha = 0.1f)
             UiTone.EUPHORIC -> Color(0xFFFFD700).copy(alpha = 0.1f)
+        }
+        
+        // Task 3: Nighttime overlay
+        return if (state.lightingOverlayAlpha > 0) {
+            Color.Black.copy(alpha = state.lightingOverlayAlpha)
+        } else {
+            baseColor
         }
     }
 

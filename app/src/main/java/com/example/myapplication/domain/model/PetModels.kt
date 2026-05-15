@@ -48,7 +48,9 @@ data class PetModel(
     // vNext: Buff System
     val activeModifiers: List<TimedModifier> = emptyList(),
     val modifiers: List<com.example.myapplication.core.modifier.Modifier> = emptyList(),
-    val casinoSession: CasinoSession = CasinoSession()
+    val casinoSession: CasinoSession = CasinoSession(),
+    val phone: PhoneState = PhoneState(),
+    val gym: com.example.myapplication.domain.gym.model.GymState = com.example.myapplication.domain.gym.model.GymState()
 )
 
 @Serializable
@@ -97,7 +99,8 @@ data class PetStats(
     val attention: Float = 100f,
     val emotionalStability: Float = 50f,
     val trust: Float = 50f,
-    val bond: Float = 10f
+    val bond: Float = 10f,
+    val mentalEnergy: Float = 100f
 ) {
     /**
      * Precision clamping. Ensures values stay within [0, 100].
@@ -122,7 +125,8 @@ data class PetStats(
             attention = f(attention),
             emotionalStability = f(emotionalStability),
             trust = f(trust),
-            bond = f(bond)
+            bond = f(bond),
+            mentalEnergy = f(mentalEnergy)
         )
     }
 
@@ -132,14 +136,17 @@ data class PetStats(
     fun applyEffect(effect: StatEffect): PetStats {
         return copy(
             hunger = hunger + effect.hungerChange,
+            thirst = thirst + effect.thirstChange,
             energy = energy + effect.energyChange,
+            hygiene = hygiene + effect.hygieneChange,
             happiness = happiness + effect.happinessChange,
             health = health + effect.healthChange,
             stress = stress + effect.stressChange,
             social = social + effect.socialChange,
             intelligence = intelligence + effect.intelligenceChange,
             fitness = fitness + effect.fitnessChange,
-            comfort = comfort + effect.comfortChange
+            comfort = comfort + effect.comfortChange,
+            mentalEnergy = mentalEnergy + effect.mentalEnergyChange
         ).clamped()
     }
 
