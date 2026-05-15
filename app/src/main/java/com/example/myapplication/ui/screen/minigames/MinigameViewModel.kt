@@ -2,8 +2,8 @@ package com.example.myapplication.ui.screen.minigames
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.myapplication.core.EventBus
 import com.example.myapplication.domain.event.GameplayEvent
-import com.example.myapplication.domain.event.GameplayEventManager
 import com.example.myapplication.domain.repository.EconomyRepository
 import com.example.myapplication.domain.repository.PetRepository
 import com.example.myapplication.domain.repository.UpgradeRepository
@@ -19,7 +19,7 @@ class MinigameViewModel @Inject constructor(
     private val petRepository: PetRepository,
     private val upgradeRepository: UpgradeRepository,
     private val simulationManager: SimulationManager,
-    private val eventManager: GameplayEventManager
+    private val eventBus: EventBus
 ) : ViewModel() {
 
     fun rewardTapRush(score: Int) {
@@ -30,7 +30,7 @@ class MinigameViewModel @Inject constructor(
                 economyRepository.addCoins(coins)
             }
             simulationManager.processMinigameResult(score)
-            eventManager.dispatch(GameplayEvent.MinigameCompleted("tap_rush", score, coins))
+            eventBus.publish(GameplayEvent.MinigameCompleted("tap_rush", score, coins))
         }
     }
 
@@ -40,7 +40,7 @@ class MinigameViewModel @Inject constructor(
             val coins = (50 * multiplier).toInt() // REBALANCED: From 100
             economyRepository.addCoins(coins)
             simulationManager.processMinigameResult(score)
-            eventManager.dispatch(GameplayEvent.MinigameCompleted("memory_match", score, coins))
+            eventBus.publish(GameplayEvent.MinigameCompleted("memory_match", score, coins))
         }
     }
 
@@ -52,7 +52,7 @@ class MinigameViewModel @Inject constructor(
                 economyRepository.addCoins(coins)
             }
             simulationManager.processMinigameResult(score)
-            eventManager.dispatch(GameplayEvent.MinigameCompleted("reaction_tap", score, coins))
+            eventBus.publish(GameplayEvent.MinigameCompleted("reaction_tap", score, coins))
         }
     }
 
@@ -64,7 +64,7 @@ class MinigameViewModel @Inject constructor(
                 economyRepository.addCoins(coins)
             }
             simulationManager.processMinigameResult(score)
-            eventManager.dispatch(GameplayEvent.MinigameCompleted("neon_dodge", score, coins))
+            eventBus.publish(GameplayEvent.MinigameCompleted("neon_dodge", score, coins))
         }
     }
 
@@ -76,7 +76,7 @@ class MinigameViewModel @Inject constructor(
                 economyRepository.addCoins(coins)
             }
             simulationManager.processMinigameResult(score)
-            eventManager.dispatch(GameplayEvent.MinigameCompleted("neon_hack", score, coins))
+            eventBus.publish(GameplayEvent.MinigameCompleted("neon_hack", score, coins))
         }
     }
 
@@ -88,7 +88,7 @@ class MinigameViewModel @Inject constructor(
                 economyRepository.addCoins(coins)
             }
             simulationManager.processMinigameResult(score)
-            eventManager.dispatch(GameplayEvent.MinigameCompleted("void_runner", score, coins))
+            eventBus.publish(GameplayEvent.MinigameCompleted("void_runner", score, coins))
         }
     }
 

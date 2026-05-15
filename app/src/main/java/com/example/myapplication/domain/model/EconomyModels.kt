@@ -48,6 +48,7 @@ data class StatEffect(
     val healthChange: Float = 0f,
     val stressChange: Float = 0f,
     val socialChange: Float = 0f,
+    val hygieneChange: Float = 0f,
     val intelligenceChange: Float = 0f,
     val fitnessChange: Float = 0f,
     val comfortChange: Float = 0f

@@ -1,6 +1,6 @@
 package com.example.myapplication.domain.progression.mission
 
-import com.example.myapplication.domain.event.GameplayEventManager
+import com.example.myapplication.core.EventBus
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -11,13 +11,13 @@ import javax.inject.Singleton
 
 @Singleton
 class MissionDispatcher @Inject constructor(
-    private val eventManager: GameplayEventManager,
+    private val eventBus: EventBus,
     private val missionManager: MissionManager
 ) {
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
     fun start() {
-        eventManager.events
+        eventBus.events
             .onEach { event ->
                 missionManager.onGameplayEvent(event)
             }

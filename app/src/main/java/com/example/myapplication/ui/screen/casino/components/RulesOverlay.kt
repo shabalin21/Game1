@@ -29,13 +29,13 @@ fun RulesOverlay(
                 .fillMaxWidth()
                 .clip(RoundedCornerShape(16.dp))
                 .background(BackgroundDark.copy(alpha = 0.95f))
-                .border(1.dp, NeonBlue.copy(alpha = 0.5f), RoundedCornerShape(16.dp))
+                .border(1.dp, PremiumBlue.copy(alpha = 0.5f), RoundedCornerShape(16.dp))
                 .padding(24.dp)
         ) {
             Column {
                 Text(
                     text = rule.title,
-                    color = NeonBlue,
+                    color = PremiumBlue,
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Black,
                     letterSpacing = 2.sp
@@ -54,7 +54,7 @@ fun RulesOverlay(
                 
                 Text(
                     text = "PAYOUT_PROTOCOL",
-                    color = NeonCyan,
+                    color = PremiumCyan,
                     fontSize = 12.sp,
                     fontWeight = FontWeight.Bold
                 )
@@ -69,7 +69,7 @@ fun RulesOverlay(
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         Text(label, color = Color.White.copy(alpha = 0.5f), fontSize = 12.sp)
-                        Text(value, color = NeonGreen, fontWeight = FontWeight.Bold, fontSize = 12.sp)
+                        Text(value, color = PremiumGreen, fontWeight = FontWeight.Bold, fontSize = 12.sp)
                     }
                 }
                 
@@ -78,13 +78,14 @@ fun RulesOverlay(
                 Button(
                     onClick = onDismiss,
                     modifier = Modifier.fillMaxWidth(),
-                    colors = ButtonDefaults.buttonColors(containerColor = NeonBlue.copy(alpha = 0.2f)),
+                    colors = ButtonDefaults.buttonColors(containerColor = PremiumBlue.copy(alpha = 0.2f)),
                     shape = RoundedCornerShape(8.dp),
-                    border = androidx.compose.foundation.BorderStroke(1.dp, NeonBlue)
+                    border = androidx.compose.foundation.BorderStroke(1.dp, PremiumBlue)
                 ) {
-                    Text("CLOSE_LINK", color = NeonBlue, fontWeight = FontWeight.Black)
+                    Text("CLOSE_LINK", color = PremiumBlue, fontWeight = FontWeight.Black)
                 }
             }
         }
     }
 }
+

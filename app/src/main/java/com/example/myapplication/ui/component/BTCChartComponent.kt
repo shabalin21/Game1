@@ -15,7 +15,7 @@ import com.example.myapplication.ui.theme.*
 fun BTCChartComponent(
     history: List<Float>,
     modifier: Modifier = Modifier,
-    accentColor: Color = CyberYellow
+    accentColor: Color = PremiumGold
 ) {
     if (history.size < 2) return
 
@@ -86,3 +86,4 @@ fun BTCChartComponent(
         )
     }
 }
+

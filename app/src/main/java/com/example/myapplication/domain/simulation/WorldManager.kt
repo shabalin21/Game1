@@ -1,11 +1,12 @@
 package com.example.myapplication.domain.simulation
 
+import com.example.myapplication.core.EventBus
 import com.example.myapplication.domain.model.TimeOfDay
 import com.example.myapplication.domain.model.Weather
 import com.example.myapplication.domain.model.WorldState
 import com.example.myapplication.domain.repository.WorldRepository
-import com.example.myapplication.domain.event.GameplayEventManager
 import com.example.myapplication.domain.event.GameplayEvent
+import com.example.myapplication.domain.simulation.economy.EconomySimulation
 import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -22,9 +23,10 @@ import com.example.myapplication.domain.work.engine.JobManager
 @Singleton
 class WorldManager @Inject constructor(
     private val worldRepository: WorldRepository,
-    private val eventManager: GameplayEventManager,
+    private val eventBus: EventBus,
     private val socialManager: SocialManager,
-    private val jobManager: JobManager
+    private val jobManager: JobManager,
+    private val economySimulation: EconomySimulation
 ) {
     // 1 in-game day = 24 minutes real-time (each hour is 1 minute)
     private val MINUTES_PER_HOUR = 1
@@ -72,6 +74,8 @@ class WorldManager @Inject constructor(
             jobManager.updateMarket()
         }
 
+        economySimulation.tick()
+
         // Ambient NPC Posts
         if (Random.nextFloat() < 0.002f) {
             socialManager.generateNpcPost(null)
@@ -92,7 +96,7 @@ class WorldManager @Inject constructor(
             impact = eventData.impact
         )
         
-        eventManager.dispatch(event)
+        eventBus.publish(event)
         
         // Generate NPC post reacting to the event
         socialManager.generateNpcPost(event)

@@ -102,7 +102,7 @@ fun PlinkoView(
                         Text(
                             text = "${payout}x",
                             style = MaterialTheme.typography.labelSmall,
-                            color = if (payout >= 2f) NeonGreen else if (payout >= 1f) NeonYellow else NeonRed,
+                            color = if (payout >= 2f) PremiumGreen else if (payout >= 1f) PremiumGold else PremiumRed,
                             fontSize = 9.sp,
                             modifier = Modifier
                                 .clip(RoundedCornerShape(2.dp))
@@ -243,7 +243,8 @@ fun PlinkoBoard(state: PlinkoState, accentColor: Color) {
 }
 
 fun getRiskColor(risk: PlinkoRisk) = when(risk) {
-    PlinkoRisk.LOW -> CyberGreen
-    PlinkoRisk.MEDIUM -> CyberYellow
-    PlinkoRisk.HIGH -> CyberRed
+    PlinkoRisk.LOW -> PremiumGreen
+    PlinkoRisk.MEDIUM -> PremiumGold
+    PlinkoRisk.HIGH -> PremiumRed
 }
+

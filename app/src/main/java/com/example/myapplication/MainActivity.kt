@@ -14,7 +14,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.myapplication.domain.model.SettingsModel
 import com.example.myapplication.domain.repository.SettingsRepository
-import com.example.myapplication.domain.simulation.GameLoopManager
 import com.example.myapplication.ui.component.GlobalOverlay
 import com.example.myapplication.ui.debug.DevLabManager
 import com.example.myapplication.ui.debug.PerformanceOverlay
@@ -28,7 +27,7 @@ import javax.inject.Inject
 class MainActivity : ComponentActivity() {
 
     @Inject
-    lateinit var gameLoopManager: GameLoopManager
+    lateinit var worldKernel: com.example.myapplication.core.WorldKernel
 
     @Inject
     lateinit var devLabManager: DevLabManager
@@ -97,12 +96,12 @@ class MainActivity : ComponentActivity() {
 
     override fun onResume() {
         super.onResume()
-        gameLoopManager.start()
+        worldKernel.boot()
     }
 
     override fun onPause() {
         super.onPause()
-        gameLoopManager.stop()
+        worldKernel.shutdown()
     }
 
     override fun onDestroy() {

@@ -1,7 +1,7 @@
 package com.example.myapplication.ui.animation
 
+import com.example.myapplication.core.EventBus
 import com.example.myapplication.domain.event.GameplayEvent
-import com.example.myapplication.domain.event.GameplayEventManager
 import com.example.myapplication.domain.model.Mood
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -13,13 +13,13 @@ import javax.inject.Singleton
 
 @Singleton
 class JuiceBridge @Inject constructor(
-    private val eventManager: GameplayEventManager,
+    private val eventBus: EventBus,
     private val juiceManager: JuiceManager
 ) {
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
 
     fun start() {
-        eventManager.events
+        eventBus.events
             .onEach { event ->
                 handleEvent(event)
             }

@@ -68,12 +68,13 @@ fun TerminalLogView(
 }
 
 private fun getCategoryColor(category: LogCategory): Color = when (category) {
-    LogCategory.ECONOMY -> NeonGreen
-    LogCategory.CASINO -> NeonPink
-    LogCategory.NEURAL -> NeonBlue
-    LogCategory.EMOTION -> NeonPurple
-    LogCategory.WARNING -> NeonOrange
+    LogCategory.ECONOMY -> PremiumGreen
+    LogCategory.CASINO -> PremiumPink
+    LogCategory.NEURAL -> PremiumBlue
+    LogCategory.EMOTION -> PremiumPurple
+    LogCategory.WARNING -> PremiumOrange
     LogCategory.CRITICAL -> Color.Red
     LogCategory.SYSTEM -> Color.Cyan
-    LogCategory.MARKET -> NeonCyan
+    LogCategory.MARKET -> PremiumCyan
 }
+

@@ -7,6 +7,10 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -20,6 +24,8 @@ import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.res.stringResource
+import com.example.myapplication.R
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.myapplication.domain.model.Mood
 import androidx.compose.foundation.combinedClickable
@@ -31,9 +37,11 @@ import kotlinx.coroutines.launch
 import com.example.myapplication.domain.model.PetModel
 import com.example.myapplication.domain.model.WorldState
 import com.example.myapplication.domain.model.EmotionState
+import com.example.myapplication.domain.model.PsychologyState
 import com.example.myapplication.ui.component.*
 import com.example.myapplication.ui.fx.AtmosphereManager
 import com.example.myapplication.ui.fx.ParticleEngine
+import com.example.myapplication.ui.render.RenderState
 import com.example.myapplication.ui.theme.*
 
 @Composable
@@ -41,25 +49,25 @@ fun HomeScreen(
     viewModel: PetViewModel = hiltViewModel(),
     juiceViewModel: com.example.myapplication.ui.animation.JuiceViewModel = hiltViewModel(),
     onNavigateToUpgrades: () -> Unit = {},
-    onNavigateToSettings: () -> Unit = {}
+    onNavigateToSettings: () -> Unit = {},
+    onNavigateToCare: () -> Unit = {},
+    onNavigateToPlay: () -> Unit = {},
+    onNavigateToShop: () -> Unit = {},
+    onNavigateToSocial: () -> Unit = {}
 ) {
-    val cheatManager: com.example.myapplication.domain.admin.CheatManager = 
-        remember { (viewModel.interactionSystem.simulationManager.cheatManager) }
-
-    val pet by viewModel.petState.collectAsState()
-    val coins by viewModel.coins.collectAsState()
-    val btcPrice by viewModel.btcPrice.collectAsState()
-    val world by viewModel.worldState.collectAsState()
+    val renderState by viewModel.renderState.collectAsState()
     val settings by viewModel.settings.collectAsState()
     val foodInventory by viewModel.foodInventory.collectAsState()
     val scope = rememberCoroutineScope()
+    val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
 
     val atmosphereManager: AtmosphereManager = remember {
         AtmosphereManager(juiceViewModel.juiceManager.particleEngine)
     }
 
-    // Update Atmosphere
-    LaunchedEffect(world, settings.graphics.targetFps) {
+    // Update Atmosphere (Particles)
+    LaunchedEffect(renderState?.atmosphere, renderState?.isSleeping, settings.graphics.targetFps) {
+        val state = renderState ?: return@LaunchedEffect
         var lastTime = withFrameMillis { it }
         val targetFps = settings.graphics.targetFps
         val targetFrameTime = 1f / targetFps
@@ -72,7 +80,7 @@ fun HomeScreen(
                 
                 accumulator += deltaTime
                 if (accumulator >= targetFrameTime) {
-                    atmosphereManager.update(accumulator, world)
+                    atmosphereManager.update(accumulator, state.atmosphere, state.isSleeping)
                     accumulator = 0f
                 }
             }
@@ -81,85 +89,164 @@ fun HomeScreen(
 
     var showFoodDialog by remember { mutableStateOf(false) }
 
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .pointerInput(Unit) {
-                detectTapGestures {
-                    scope.launch {
-                        juiceViewModel.juiceManager.triggerEffect(JuiceEvent.Interaction(InteractionType.PET))
-                    }
-                }
-            }
-    ) {
-        PremiumBackground(accentColor = PremiumPurple) {}
-
-        pet?.let { currentPet ->
-            // MOOD-BASED AMBIENT GLOW + WORLD TINT
-            val moodColor = when(currentPet.emotionState.primaryMood) {
-                Mood.ANGRY -> PremiumRed
-                Mood.SAD -> Color(0xFF546E7A)
-                Mood.SLEEPY -> PremiumBlue
-                Mood.EXCITED -> PremiumPink
-                else -> PremiumPurple
-            }
-            
-            val ambientWorldColor = atmosphereManager.getAmbientColor(world)
-
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(ambientWorldColor.copy(alpha = 0.1f))
-            )
-
-            Box(
-                modifier = Modifier
-                    .align(Alignment.Center)
-                    .fillMaxWidth()
-                    .height(450.dp)
-                    .blur(100.dp)
-                    .background(
-                        Brush.radialGradient(
-                            colors = listOf(moodColor.copy(alpha = 0.12f * currentPet.emotionState.intensity), Color.Transparent)
+    ModalNavigationDrawer(
+        drawerState = drawerState,
+        drawerContent = {
+            ModalDrawerSheet(
+                drawerContainerColor = SurfaceDark,
+                modifier = Modifier.width(300.dp)
+            ) {
+                Column(modifier = Modifier.fillMaxSize()) {
+                    Spacer(Modifier.height(48.dp))
+                    Text(
+                        stringResource(R.string.menu_title),
+                        modifier = Modifier.padding(16.dp),
+                        style = MaterialTheme.typography.headlineSmall,
+                        color = Color.White,
+                        fontWeight = FontWeight.Bold
+                    )
+                    HorizontalDivider(color = GlassBorder)
+                    NavigationDrawerItem(
+                        label = { Text("Care") },
+                        selected = false,
+                        onClick = {
+                            scope.launch { drawerState.close() }
+                            onNavigateToCare()
+                        },
+                        modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding),
+                        colors = NavigationDrawerItemDefaults.colors(
+                            unselectedTextColor = Color.White,
+                            unselectedContainerColor = Color.Transparent
                         )
                     )
-            )
-
-            HomeScreenContent(
-                pet = currentPet,
-                coins = coins,
-                btcPrice = btcPrice,
-                targetFps = settings.graphics.targetFps,
-                canFeed = foodInventory.isNotEmpty(),
-                onFeedClick = { showFoodDialog = true },
-                onPet = { viewModel.petThePet() },
-                onToggleSleep = { viewModel.toggleSleep() },
-                onActivateDevLab = { cheatManager.activate() }
-            )
-        } ?: Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            CircularProgressIndicator(color = PremiumPurple)
+                    NavigationDrawerItem(
+                        label = { Text("Play") },
+                        selected = false,
+                        onClick = {
+                            scope.launch { drawerState.close() }
+                            onNavigateToPlay()
+                        },
+                        modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding),
+                        colors = NavigationDrawerItemDefaults.colors(
+                            unselectedTextColor = Color.White,
+                            unselectedContainerColor = Color.Transparent
+                        )
+                    )
+                    NavigationDrawerItem(
+                        label = { Text("Shop") },
+                        selected = false,
+                        onClick = {
+                            scope.launch { drawerState.close() }
+                            onNavigateToShop()
+                        },
+                        modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding),
+                        colors = NavigationDrawerItemDefaults.colors(
+                            unselectedTextColor = Color.White,
+                            unselectedContainerColor = Color.Transparent
+                        )
+                    )
+                    NavigationDrawerItem(
+                        label = { Text("Friends") },
+                        selected = false,
+                        onClick = {
+                            scope.launch { drawerState.close() }
+                            onNavigateToSocial()
+                        },
+                        modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding),
+                        colors = NavigationDrawerItemDefaults.colors(
+                            unselectedTextColor = Color.White,
+                            unselectedContainerColor = Color.Transparent
+                        )
+                    )
+                }
+            }
         }
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .pointerInput(Unit) {
+                    detectTapGestures {
+                        scope.launch {
+                            juiceViewModel.juiceManager.triggerEffect(JuiceEvent.Interaction(InteractionType.PET))
+                        }
+                    }
+                }
+        ) {
+            PremiumBackground(accentColor = PremiumPurple) {}
 
-        if (showFoodDialog) {
-            FoodSelectionDialog(
-                foodItems = foodInventory,
-                onDismiss = { showFoodDialog = false },
-                onSelect = { itemId -> viewModel.feedPet(itemId) }
-            )
+            renderState?.let { state ->
+                val atmosphere = state.atmosphere
+                val ambientColor = atmosphereManager.getAmbientColor(atmosphere)
+
+                // Background Glow based on Mood
+                val moodColor = when(state.primaryMood) {
+                    Mood.ANGRY -> PremiumRed
+                    Mood.SAD -> Color(0xFF546E7A)
+                    Mood.SLEEPY -> PremiumBlue
+                    Mood.EXCITED -> PremiumPink
+                    else -> PremiumPurple
+                }
+
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(ambientColor)
+                        .blur(atmosphere.blurIntensity.dp)
+                )
+
+                // Mood Gradient
+                Box(
+                    modifier = Modifier
+                        .align(Alignment.Center)
+                        .fillMaxWidth()
+                        .height(450.dp)
+                        .blur(100.dp)
+                        .background(
+                            Brush.radialGradient(
+                                colors = listOf(moodColor.copy(alpha = 0.12f * state.moodIntensity), Color.Transparent)
+                            )
+                        )
+                )
+
+                HomeScreenContent(
+                    state = state,
+                    targetFps = settings.graphics.targetFps,
+                    canFeed = foodInventory.isNotEmpty(),
+                    onFeedClick = { showFoodDialog = true },
+                    onPet = { viewModel.petThePet() },
+                    onToggleSleep = { viewModel.toggleSleep() },
+                    onMenuClick = { scope.launch { drawerState.open() } },
+                    onNavigateToSettings = onNavigateToSettings,
+                    onNavigateToUpgrades = onNavigateToUpgrades,
+                    onActivateDevLab = { viewModel.executeCommand("devlab") }
+                )
+            } ?: Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                CircularProgressIndicator(color = PremiumPurple)
+            }
+
+            if (showFoodDialog) {
+                FoodSelectionDialog(
+                    foodItems = foodInventory,
+                    onDismiss = { showFoodDialog = false },
+                    onSelect = { itemId -> viewModel.feedPet(itemId) }
+                )
+            }
         }
     }
 }
 
 @Composable
 fun HomeScreenContent(
-    pet: PetModel,
-    coins: Int,
-    btcPrice: Float,
+    state: RenderState,
     targetFps: Int = 60,
     canFeed: Boolean,
     onFeedClick: () -> Unit,
     onPet: () -> Unit,
     onToggleSleep: () -> Unit,
+    onMenuClick: () -> Unit = {},
+    onNavigateToSettings: () -> Unit = {},
+    onNavigateToUpgrades: () -> Unit = {},
     onActivateDevLab: () -> Unit = {}
 ) {
     val haptic = LocalHapticFeedback.current
@@ -171,7 +258,7 @@ fun HomeScreenContent(
             .padding(horizontal = 20.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        // TOP HUD: Money & BTC
+        // HUD
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -179,19 +266,43 @@ fun HomeScreenContent(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            CoinDisplay(coins = coins)
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                IconButton(onClick = onMenuClick) {
+                    Icon(Icons.Default.Menu, contentDescription = "Menu", tint = Color.White)
+                }
+                CoinDisplay(coins = state.coins)
+            }
             
-            CurrencyCard(
-                icon = "₿",
-                value = btcPrice.toLong(),
-                accentColor = PremiumGold
-            )
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                IconButton(onClick = onNavigateToUpgrades) {
+                    Icon(Icons.Default.Star, contentDescription = "Upgrades", tint = PremiumGold)
+                }
+                IconButton(onClick = onNavigateToSettings) {
+                    Icon(Icons.Default.Settings, contentDescription = "Settings", tint = Color.White.copy(alpha = 0.6f))
+                }
+            }
         }
 
         Spacer(modifier = Modifier.height(16.dp))
 
+        // World Info
+        Surface(
+            color = Color.Black.copy(alpha = 0.3f),
+            shape = RoundedCornerShape(12.dp),
+            modifier = Modifier.padding(8.dp)
+        ) {
+            Text(
+                text = "${state.world.timeLabel} ${state.world.weatherIcon} ${state.world.temperatureLabel}",
+                color = Color.White,
+                modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
+                style = MaterialTheme.typography.labelMedium
+            )
+        }
+
+        Spacer(modifier = Modifier.height(8.dp))
+
         // Mood Badge
-        MoodBadge(pet.emotionState)
+        MoodBadge(state.primaryMood)
 
         Spacer(modifier = Modifier.weight(0.5f))
 
@@ -202,12 +313,11 @@ fun HomeScreenContent(
             contentAlignment = Alignment.Center
         ) {
             PetSprite(
-                emotion = pet.emotionState,
-                psychology = pet.psychology,
-                isSleeping = pet.isSleeping,
-                appearance = pet.appearance,
-                modifiers = pet.activeModifiers,
-                equippedItems = pet.equippedItems,
+                emotion = EmotionState(primaryMood = state.primaryMood, intensity = state.moodIntensity),
+                psychology = PsychologyState(stress = state.stats.stress, burnout = state.stats.burnout, motivation = state.stats.motivation),
+                isSleeping = state.isSleeping,
+                appearance = state.appearance,
+                equippedItems = state.equippedItems,
                 onActivateDevLab = onActivateDevLab,
                 onPet = onPet,
                 targetFps = targetFps,
@@ -216,7 +326,7 @@ fun HomeScreenContent(
         }
         
         Text(
-            text = pet.psychology.currentActivity.name.replace("_", " "),
+            text = state.activityName.replace("_", " "),
             style = MaterialTheme.typography.labelSmall,
             color = Color.White.copy(alpha = 0.5f),
             fontWeight = FontWeight.Bold,
@@ -225,60 +335,56 @@ fun HomeScreenContent(
 
         Spacer(modifier = Modifier.weight(1f))
 
-        // BOTTOM PANEL: Stats & Actions
+        // BOTTOM PANEL
         GlassCard(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(bottom = 16.dp)
         ) {
-            // Stats Row
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(12.dp)
-            ) {
-                AnimatedStatBar(label = "HUNGER", value = pet.stats.hunger, color = StatHunger, modifier = Modifier.weight(1f))
-                AnimatedStatBar(label = "ENERGY", value = pet.stats.energy, color = StatEnergy, modifier = Modifier.weight(1f))
-                AnimatedStatBar(label = "HAPPINESS", value = pet.stats.happiness, color = StatHappiness, modifier = Modifier.weight(1f))
-            }
+            Column {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    AnimatedStatBar(label = "HUNGER", value = state.stats.hunger, color = StatHunger, modifier = Modifier.weight(1f))
+                    AnimatedStatBar(label = "ENERGY", value = state.stats.energy, color = StatEnergy, modifier = Modifier.weight(1f))
+                }
+                Spacer(Modifier.height(8.dp))
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    AnimatedStatBar(label = "STRESS", value = state.stats.stress, color = Color.Red, modifier = Modifier.weight(1f))
+                    AnimatedStatBar(label = "BURNOUT", value = state.stats.burnout, color = Color.Gray, modifier = Modifier.weight(1f))
+                }
 
-            Spacer(modifier = Modifier.height(24.dp))
+                Spacer(modifier = Modifier.height(24.dp))
 
-            // Quick Actions
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(12.dp)
-            ) {
-                PremiumButton(
-                    text = "Feed",
-                    onClick = {
-                        if (canFeed) {
-                            haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                            onFeedClick()
-                        }
-                    },
-                    enabled = canFeed && !pet.isSleeping,
-                    modifier = Modifier.weight(1f),
-                    accentColor = PremiumGold
-                )
-                PremiumButton(
-                    text = "Pet",
-                    onClick = {
-                        haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                        onPet()
-                    },
-                    enabled = !pet.isSleeping,
-                    modifier = Modifier.weight(1f),
-                    accentColor = PremiumPink
-                )
-                PremiumButton(
-                    text = if (pet.isSleeping) "Wake" else "Sleep",
-                    onClick = {
-                        haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                        onToggleSleep()
-                    },
-                    modifier = Modifier.weight(1f),
-                    accentColor = if (pet.isSleeping) PremiumBlue else PremiumPurple
-                )
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    PremiumButton(
+                        text = "FEED",
+                        onClick = { if (canFeed) { haptic.performHapticFeedback(HapticFeedbackType.LongPress); onFeedClick() } },
+                        enabled = canFeed && !state.isSleeping,
+                        modifier = Modifier.weight(1f),
+                        accentColor = PremiumGold
+                    )
+                    PremiumButton(
+                        text = "PET",
+                        onClick = { haptic.performHapticFeedback(HapticFeedbackType.LongPress); onPet() },
+                        enabled = !state.isSleeping,
+                        modifier = Modifier.weight(1f),
+                        accentColor = PremiumPink
+                    )
+                    PremiumButton(
+                        text = if (state.isSleeping) "WAKE" else "SLEEP",
+                        onClick = { haptic.performHapticFeedback(HapticFeedbackType.LongPress); onToggleSleep() },
+                        modifier = Modifier.weight(1f),
+                        accentColor = if (state.isSleeping) PremiumBlue else PremiumPurple
+                    )
+                }
             }
         }
         
@@ -287,8 +393,8 @@ fun HomeScreenContent(
 }
 
 @Composable
-fun MoodBadge(emotion: EmotionState) {
-    val color = when(emotion.primaryMood) {
+fun MoodBadge(mood: Mood) {
+    val color = when(mood) {
         Mood.ANGRY -> PremiumRed
         Mood.SAD -> Color(0xFF546E7A)
         Mood.SLEEPY -> PremiumBlue
@@ -308,7 +414,7 @@ fun MoodBadge(emotion: EmotionState) {
             Box(modifier = Modifier.size(6.dp).background(color, CircleShape))
             Spacer(modifier = Modifier.width(8.dp))
             Text(
-                text = emotion.primaryMood.name,
+                text = mood.name,
                 style = MaterialTheme.typography.labelSmall,
                 fontWeight = FontWeight.Bold,
                 color = Color.White

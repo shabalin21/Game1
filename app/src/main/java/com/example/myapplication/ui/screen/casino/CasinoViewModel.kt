@@ -14,11 +14,10 @@ import javax.inject.Inject
 
 @HiltViewModel
 class CasinoViewModel @Inject constructor(
-    private val casinoManager: CasinoManager,
+    private val intentDispatcher: com.example.myapplication.domain.event.IntentDispatcher,
     private val petRepository: com.example.myapplication.domain.repository.PetRepository,
     private val economyRepository: EconomyRepository,
     private val stateManager: CasinoStateManager,
-    private val adminProcessor: AdminCommandProcessor,
     private val performanceMonitor: com.example.myapplication.util.PerformanceMonitor,
     val logManager: TerminalLogManager
 ) : ViewModel() {
@@ -40,47 +39,43 @@ class CasinoViewModel @Inject constructor(
     val entryAuthorized: StateFlow<Boolean> = _entryAuthorized.asStateFlow()
 
     fun tryEnter() {
-        viewModelScope.launch {
-            if (casinoManager.tryEnterCasino()) {
-                _entryAuthorized.value = true
-            }
-        }
+        intentDispatcher.dispatch(com.example.myapplication.domain.event.GameplayIntent.Casino.TryEnter)
     }
 
     fun onAdminCommand(command: String) {
-        adminProcessor.processCommand(command)
+        intentDispatcher.dispatch(com.example.myapplication.domain.event.GameplayIntent.Admin.ExecuteCommand(command))
     }
 
     fun startBlackjack(bet: Int) {
-        viewModelScope.launch { casinoManager.startBlackjack(bet) }
+        intentDispatcher.dispatch(com.example.myapplication.domain.event.GameplayIntent.Casino.StartBlackjack(bet))
     }
 
     fun blackjackHit() {
-        viewModelScope.launch { casinoManager.blackjackHit() }
+        intentDispatcher.dispatch(com.example.myapplication.domain.event.GameplayIntent.Casino.BlackjackHit)
     }
 
     fun blackjackStand() {
-        viewModelScope.launch { casinoManager.blackjackStand() }
+        intentDispatcher.dispatch(com.example.myapplication.domain.event.GameplayIntent.Casino.BlackjackStand)
     }
 
     fun playSlots(bet: Int) {
-        viewModelScope.launch { casinoManager.playSlots(bet) }
+        intentDispatcher.dispatch(com.example.myapplication.domain.event.GameplayIntent.Casino.PlaySlots(bet))
     }
 
     fun playCoinFlip(bet: Int, side: CoinSide) {
-        viewModelScope.launch { casinoManager.playCoinFlip(bet, side) }
+        intentDispatcher.dispatch(com.example.myapplication.domain.event.GameplayIntent.Casino.PlayCoinFlip(bet, side))
     }
 
     fun startCrash(bet: Int) {
-        casinoManager.startCrash(bet)
+        intentDispatcher.dispatch(com.example.myapplication.domain.event.GameplayIntent.Casino.StartCrash(bet))
     }
 
     fun cashOutCrash() {
-        casinoManager.cashOutCrash()
+        intentDispatcher.dispatch(com.example.myapplication.domain.event.GameplayIntent.Casino.CashOutCrash)
     }
 
     fun dropPlinkoBall(bet: Int) {
-        viewModelScope.launch { casinoManager.dropPlinkoBall(bet) }
+        intentDispatcher.dispatch(com.example.myapplication.domain.event.GameplayIntent.Casino.DropPlinkoBall(bet))
     }
 
     fun setPlinkoRisk(risk: PlinkoRisk) {
@@ -88,13 +83,6 @@ class CasinoViewModel @Inject constructor(
     }
 
     fun payReEntry() {
-        viewModelScope.launch {
-            val pet = petState.value ?: return@launch
-            if (economyRepository.spendCoins(pet.casinoSession.reEntryFee)) {
-                petRepository.savePetState(pet.copy(
-                    casinoSession = pet.casinoSession.copy(isBanned = false, sessionWins = 0)
-                ))
-            }
-        }
+        intentDispatcher.dispatch(com.example.myapplication.domain.event.GameplayIntent.Casino.PayReEntry)
     }
 }

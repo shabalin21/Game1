@@ -2,11 +2,11 @@ package com.example.myapplication.ui.screen.settings
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.myapplication.core.CanonicalState
 import com.example.myapplication.data.local.PetDao
 import com.example.myapplication.domain.model.*
 import com.example.myapplication.domain.repository.SettingsRepository
 import com.example.myapplication.domain.repository.StatisticsRepository
-import com.example.myapplication.domain.state.GameStateManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -16,7 +16,7 @@ import javax.inject.Inject
 class SettingsViewModel @Inject constructor(
     private val settingsRepository: SettingsRepository,
     private val statisticsRepository: StatisticsRepository,
-    private val gameStateManager: GameStateManager,
+    private val canonicalState: CanonicalState,
     private val petDao: PetDao
 ) : ViewModel() {
 
@@ -26,7 +26,7 @@ class SettingsViewModel @Inject constructor(
     val statistics = statisticsRepository.getStatistics()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), LifetimeStats())
 
-    val petState = gameStateManager.gameState.map { it.pet }
+    val petState = canonicalState.state.map { it.pet }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), null)
 
     fun updateGraphics(graphics: GraphicsSettings) {

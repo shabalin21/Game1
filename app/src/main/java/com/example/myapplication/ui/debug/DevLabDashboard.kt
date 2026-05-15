@@ -51,18 +51,18 @@ fun DevLabDashboard(
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(
                     text = "Developer Console",
-                    color = NeonGreen,
+                    color = PremiumGreen,
                     fontFamily = FontFamily.Monospace,
                     fontWeight = FontWeight.Bold,
                     fontSize = 18.sp
                 )
                 Spacer(modifier = Modifier.weight(1f))
                 IconButton(onClick = { manager.isVisible = false }) {
-                    Icon(Icons.Default.Close, contentDescription = "Close", tint = NeonGreen)
+                    Icon(Icons.Default.Close, contentDescription = "Close", tint = PremiumGreen)
                 }
             }
 
-            Divider(color = NeonGreen.copy(alpha = 0.3f), thickness = 1.dp)
+            Divider(color = PremiumGreen.copy(alpha = 0.3f), thickness = 1.dp)
             
             Spacer(modifier = Modifier.height(16.dp))
 
@@ -125,7 +125,7 @@ fun DevLabDashboard(
                 Column(modifier = Modifier.weight(1f).fillMaxHeight()) {
                     Text(
                         text = "System Logs:",
-                        color = NeonGreen.copy(alpha = 0.6f),
+                        color = PremiumGreen.copy(alpha = 0.6f),
                         fontFamily = FontFamily.Monospace,
                         fontSize = 12.sp
                     )
@@ -133,7 +133,7 @@ fun DevLabDashboard(
                     Box(
                         modifier = Modifier
                             .fillMaxSize()
-                            .border(1.dp, NeonGreen.copy(alpha = 0.2f), RoundedCornerShape(4.dp))
+                            .border(1.dp, PremiumGreen.copy(alpha = 0.2f), RoundedCornerShape(4.dp))
                             .background(Color.Black.copy(alpha = 0.5f))
                             .padding(8.dp)
                     ) {
@@ -141,7 +141,7 @@ fun DevLabDashboard(
                             items(debugLogs) { log ->
                                 Text(
                                     text = log,
-                                    color = NeonGreen,
+                                    color = PremiumGreen,
                                     fontFamily = FontFamily.Monospace,
                                     fontSize = 10.sp,
                                     lineHeight = 12.sp
@@ -159,7 +159,7 @@ fun DevLabDashboard(
 fun DebugSectionHeader(label: String) {
     Text(
         text = "[$label]",
-        color = NeonGreen.copy(alpha = 0.6f),
+        color = PremiumGreen.copy(alpha = 0.6f),
         fontFamily = FontFamily.Monospace,
         fontSize = 12.sp,
         modifier = Modifier.padding(top = 8.dp, bottom = 4.dp)
@@ -170,14 +170,14 @@ fun DebugSectionHeader(label: String) {
 fun DebugActionButton(label: String, onClick: () -> Unit) {
     Box(
         modifier = Modifier
-            .background(NeonGreen.copy(alpha = 0.1f), RoundedCornerShape(4.dp))
-            .border(1.dp, NeonGreen.copy(alpha = 0.3f), RoundedCornerShape(4.dp))
+            .background(PremiumGreen.copy(alpha = 0.1f), RoundedCornerShape(4.dp))
+            .border(1.dp, PremiumGreen.copy(alpha = 0.3f), RoundedCornerShape(4.dp))
             .clickable { onClick() }
             .padding(horizontal = 12.dp, vertical = 8.dp)
     ) {
         Text(
             text = label,
-            color = NeonGreen,
+            color = PremiumGreen,
             fontFamily = FontFamily.Monospace,
             fontSize = 10.sp,
             fontWeight = FontWeight.Bold
@@ -197,15 +197,16 @@ fun DebugToggle(label: String, enabled: Boolean, onToggle: () -> Unit) {
         Box(
             modifier = Modifier
                 .size(12.dp)
-                .border(1.dp, NeonGreen, RoundedCornerShape(2.dp))
-                .background(if (enabled) NeonGreen else Color.Transparent)
+                .border(1.dp, PremiumGreen, RoundedCornerShape(2.dp))
+                .background(if (enabled) PremiumGreen else Color.Transparent)
         )
         Spacer(modifier = Modifier.width(8.dp))
         Text(
             text = label,
-            color = if (enabled) NeonGreen else NeonGreen.copy(alpha = 0.4f),
+            color = if (enabled) PremiumGreen else PremiumGreen.copy(alpha = 0.4f),
             fontFamily = FontFamily.Monospace,
             fontSize = 10.sp
         )
     }
 }
+

@@ -15,6 +15,8 @@ val PremiumGreen = Color(0xFF81C784)   // Health / Stability / Positive
 val PremiumRed = Color(0xFFEF5350)     // Danger / Warnings / Stress
 val PremiumGold = Color(0xFFFFD54F)    // Economy / Assets
 val PremiumPink = Color(0xFFF06292)    // Buddy / Emotions
+val PremiumOrange = Color(0xFFFF8A65)  // Energy / Heat / Special
+val PremiumCyan = Color(0xFF4DD0E1)    // Tech / Digital / Cool
 
 // STATUS COLORS
 val StatHunger = PremiumGold
@@ -31,21 +33,3 @@ val GlassBorderStrong = Color(0x33FFFFFF)
 val PrimaryColor = PremiumPurple
 val SecondaryColor = PremiumBlue
 val AccentColor = PremiumPink
-
-// LEGACY COMPATIBILITY - TO BE REMOVED AFTER REFACTOR
-val NeonBlue = PremiumBlue
-val NeonPurple = PremiumPurple
-val NeonGreen = PremiumGreen
-val NeonRed = PremiumRed
-val NeonYellow = PremiumGold
-val NeonPink = PremiumPink
-val NeonOrange = Color(0xFFFF8A65)
-val NeonCyan = Color(0xFF4DD0E1)
-
-// CYBER ALIASES FOR COMPATIBILITY
-val CyberBlue = PremiumBlue
-val CyberPurple = PremiumPurple
-val CyberGreen = PremiumGreen
-val CyberRed = PremiumRed
-val CyberYellow = PremiumGold
-val CyberPink = PremiumPink

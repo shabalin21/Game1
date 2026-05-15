@@ -80,7 +80,7 @@ fun CityHubScreen(
                 title = "Stock Market",
                 subtitle = "Global Investments",
                 icon = Icons.Default.Info, 
-                color = NeonCyan,
+                color = PremiumCyan,
                 onClick = onNavigateToInvestments
             )
 
@@ -188,3 +188,4 @@ fun HubCategoryCard(
         }
     }
 }
+

@@ -28,6 +28,9 @@ data class PetModel(
     val missions: MissionState = MissionState(),
     val collectionLog: Set<String> = emptySet(), // Set of item IDs discovered
     
+    // NEW: Emotion Memory Graph
+    val memoryGraph: EmotionMemoryGraph = EmotionMemoryGraph(),
+    
     // NEW: Equipment System
     val equippedItems: Map<ItemCategory, String> = emptyMap(),
     val savedOutfits: Map<String, Map<ItemCategory, String>> = emptyMap(), // Name to equipped map
@@ -44,6 +47,7 @@ data class PetModel(
     
     // vNext: Buff System
     val activeModifiers: List<TimedModifier> = emptyList(),
+    val modifiers: List<com.example.myapplication.core.modifier.Modifier> = emptyList(),
     val casinoSession: CasinoSession = CasinoSession()
 )
 
@@ -91,7 +95,9 @@ data class PetStats(
     val comfort: Float = 100f,
     val fitness: Float = 50f,
     val attention: Float = 100f,
-    val emotionalStability: Float = 50f
+    val emotionalStability: Float = 50f,
+    val trust: Float = 50f,
+    val bond: Float = 10f
 ) {
     /**
      * Precision clamping. Ensures values stay within [0, 100].
@@ -114,7 +120,9 @@ data class PetStats(
             comfort = f(comfort),
             fitness = f(fitness),
             attention = f(attention),
-            emotionalStability = f(emotionalStability)
+            emotionalStability = f(emotionalStability),
+            trust = f(trust),
+            bond = f(bond)
         )
     }
 
@@ -160,11 +168,23 @@ data class PsychologyState(
     val objectBonds: Map<String, ObjectBond> = emptyMap(),
     val currentDesires: List<Desire> = emptyList(),
     val currentActivity: ActivityType = ActivityType.IDLE,
-    val stressLegacy: Float = 0f,
-    val addictionLevel: Float = 0f, // 0-100
-    val dopamineLevel: Float = 50f,  // 0-100
-    val impulseControl: Float = 100f, // 0-100
-    val emotionalStability: Float = 100f // 0-100
+    
+    // Core Emotional Variables (0-100)
+    val stress: Float = 0f,
+    val burnout: Float = 0f,
+    val loneliness: Float = 50f,
+    val confidence: Float = 50f,
+    val discipline: Float = 50f,
+    val comfort: Float = 100f,
+    val emotionalFatigue: Float = 0f,
+    val motivation: Float = 50f,
+    val addictionTendency: Float = 10f,
+    val socialExhaustion: Float = 0f,
+    val fulfillment: Float = 50f,
+    
+    val dopamineLevel: Float = 50f,
+    val impulseControl: Float = 100f,
+    val emotionalStability: Float = 100f
 )
 
 @Serializable

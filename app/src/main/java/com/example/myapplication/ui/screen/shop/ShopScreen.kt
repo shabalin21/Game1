@@ -61,7 +61,7 @@ fun ShopScreen(
     }
 
     Box(modifier = Modifier.fillMaxSize()) {
-        CyberBackground(accentColor = CyberYellow)
+        CyberBackground(accentColor = PremiumGold)
 
         Column(
             modifier = Modifier
@@ -72,9 +72,9 @@ fun ShopScreen(
             Spacer(modifier = Modifier.height(24.dp))
             
             ScreenHeader(
-                title = "CORE_STORE",
+                title = "STORE",
                 subtitle = "EQUIPMENT_&_RESOURCES",
-                accentColor = CyberYellow,
+                accentColor = PremiumGold,
                 onBack = onBack,
                 trailingContent = { CoinDisplay(coins = coins) }
             )
@@ -168,10 +168,10 @@ fun ShopCategorySelector(
                 modifier = Modifier
                     .width(72.dp)
                     .clip(RoundedCornerShape(12.dp))
-                    .background(if (isSelected) CyberYellow.copy(alpha = 0.15f) else SurfaceDark)
+                    .background(if (isSelected) PremiumGold.copy(alpha = 0.15f) else SurfaceDark)
                     .border(
                         width = if (isSelected) 1.dp else 0.dp,
-                        color = if (isSelected) CyberYellow else Color.Transparent,
+                        color = if (isSelected) PremiumGold else Color.Transparent,
                         shape = RoundedCornerShape(12.dp)
                     )
                     .clickable { onSelected(category) }
@@ -182,7 +182,7 @@ fun ShopCategorySelector(
                 Text(
                     text = category.name.take(6),
                     style = MaterialTheme.typography.labelSmall,
-                    color = if (isSelected) CyberYellow else Color.White.copy(alpha = 0.5f),
+                    color = if (isSelected) PremiumGold else Color.White.copy(alpha = 0.5f),
                     fontWeight = if (isSelected) FontWeight.Black else FontWeight.Bold,
                     fontSize = 9.sp
                 )
@@ -205,7 +205,7 @@ fun ShopItemCard(
         modifier = Modifier
             .fillMaxWidth()
             .clickable { onClick() },
-        accentColor = if (isOwned) CyberBlue else rarityColor,
+        accentColor = if (isOwned) PremiumBlue else rarityColor,
         showGlow = item.rarity >= ItemRarity.RARE
     ) {
         Column(
@@ -229,8 +229,8 @@ fun ShopItemCard(
                     Box(
                         modifier = Modifier
                             .matchParentSize()
-                            .background(CyberBlue.copy(alpha = 0.1f))
-                            .border(1.dp, CyberBlue.copy(alpha = 0.5f), RoundedCornerShape(16.dp))
+                            .background(PremiumBlue.copy(alpha = 0.1f))
+                            .border(1.dp, PremiumBlue.copy(alpha = 0.5f), RoundedCornerShape(16.dp))
                     )
                 }
                 
@@ -239,7 +239,7 @@ fun ShopItemCard(
                         modifier = Modifier
                             .align(Alignment.BottomEnd)
                             .padding(4.dp)
-                            .background(CyberYellow, RoundedCornerShape(4.dp))
+                            .background(PremiumGold, RoundedCornerShape(4.dp))
                             .padding(horizontal = 4.dp)
                     ) {
                         Text(
@@ -267,7 +267,7 @@ fun ShopItemCard(
             Spacer(modifier = Modifier.height(4.dp))
             
             if (isOwned) {
-                CyberBadge(text = "ACQUIRED", accentColor = CyberBlue)
+                CyberBadge(text = "ACQUIRED", accentColor = PremiumBlue)
             } else {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Text(
@@ -278,7 +278,7 @@ fun ShopItemCard(
                     Text(
                         text = "${item.price}",
                         style = MaterialTheme.typography.labelSmall,
-                        color = if (canAfford) CyberYellow else CyberRed,
+                        color = if (canAfford) PremiumGold else PremiumRed,
                         fontWeight = FontWeight.Black
                     )
                 }
@@ -289,7 +289,7 @@ fun ShopItemCard(
                 Text(
                     text = "IN STOCK: $quantity",
                     style = MaterialTheme.typography.labelSmall,
-                    color = CyberBlue,
+                    color = PremiumBlue,
                     fontSize = 9.sp
                 )
             }
@@ -299,10 +299,11 @@ fun ShopItemCard(
 
 private fun getRarityColor(rarity: ItemRarity): Color = when (rarity) {
     ItemRarity.COMMON -> Color(0xFF9E9E9E)
-    ItemRarity.UNCOMMON -> CyberGreen
-    ItemRarity.RARE -> CyberBlue
-    ItemRarity.EPIC -> CyberPurple
-    ItemRarity.LEGENDARY -> CyberYellow
-    ItemRarity.MYTHIC -> NeonPink
+    ItemRarity.UNCOMMON -> PremiumGreen
+    ItemRarity.RARE -> PremiumBlue
+    ItemRarity.EPIC -> PremiumPurple
+    ItemRarity.LEGENDARY -> PremiumGold
+    ItemRarity.MYTHIC -> PremiumPink
     ItemRarity.GOLD -> Color(0xFFFFD700)
 }
+

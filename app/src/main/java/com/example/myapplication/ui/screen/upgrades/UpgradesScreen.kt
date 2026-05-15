@@ -36,7 +36,7 @@ fun UpgradesScreen(
     Box(
         modifier = Modifier.fillMaxSize()
     ) {
-        CyberBackground(accentColor = NeonBlue)
+        CyberBackground(accentColor = PremiumBlue)
 
         Column(
             modifier = Modifier
@@ -49,7 +49,7 @@ fun UpgradesScreen(
             ScreenHeader(
                 title = "UPGRADES_TERMINAL",
                 subtitle = "PERMANENT_ENHANCEMENTS",
-                accentColor = NeonBlue,
+                accentColor = PremiumBlue,
                 onBack = onBack,
                 trailingContent = {
                     CoinDisplay(coins = coins)
@@ -158,7 +158,7 @@ fun UpgradeCard(
                 modifier = Modifier.fillMaxWidth(),
                 colors = ButtonDefaults.buttonColors(
                     containerColor = if (canAfford) SurfaceDark else Color.White.copy(alpha = 0.05f),
-                    contentColor = if (canAfford) NeonBlue else Color.White.copy(alpha = 0.2f),
+                    contentColor = if (canAfford) PremiumBlue else Color.White.copy(alpha = 0.2f),
                     disabledContainerColor = Color.White.copy(alpha = 0.05f),
                     disabledContentColor = Color.White.copy(alpha = 0.2f)
                 ),
@@ -174,7 +174,7 @@ fun UpgradeCard(
                             "💰 ${upgrade.getNextLevelCost()}", 
                             style = MaterialTheme.typography.labelLarge, 
                             fontWeight = FontWeight.Black,
-                            color = if (canAfford) NeonOrange else Color.White.copy(alpha = 0.2f)
+                            color = if (canAfford) PremiumOrange else Color.White.copy(alpha = 0.2f)
                         )
                     }
                 }
@@ -184,9 +184,10 @@ fun UpgradeCard(
 }
 
 fun getCategoryColor(category: UpgradeCategory): Color = when (category) {
-    UpgradeCategory.ENERGY -> NeonBlue
-    UpgradeCategory.HUNGER -> NeonOrange
-    UpgradeCategory.HAPPINESS -> NeonPink
-    UpgradeCategory.ECONOMY -> NeonGreen
-    UpgradeCategory.SLEEP -> NeonPurple
+    UpgradeCategory.ENERGY -> PremiumBlue
+    UpgradeCategory.HUNGER -> PremiumOrange
+    UpgradeCategory.HAPPINESS -> PremiumPink
+    UpgradeCategory.ECONOMY -> PremiumGreen
+    UpgradeCategory.SLEEP -> PremiumPurple
 }
+

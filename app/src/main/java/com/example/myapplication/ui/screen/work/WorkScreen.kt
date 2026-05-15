@@ -215,3 +215,4 @@ fun StatInfo(label: String, value: String, color: Color) {
         Text(value, color = color, fontSize = 14.sp, fontWeight = FontWeight.Bold)
     }
 }
+

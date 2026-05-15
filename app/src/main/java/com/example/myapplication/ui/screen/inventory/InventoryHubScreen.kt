@@ -28,7 +28,7 @@ fun InventoryHubScreen(
     onNavigateToAppearance: () -> Unit
 ) {
     Box(modifier = Modifier.fillMaxSize()) {
-        CyberBackground(accentColor = CyberBlue)
+        CyberBackground(accentColor = PremiumBlue)
 
         Column(
             modifier = Modifier
@@ -40,19 +40,19 @@ fun InventoryHubScreen(
             Spacer(modifier = Modifier.height(24.dp))
             
             ScreenHeader(
-                title = "INVENTORY_STORAGE",
-                subtitle = "ASSET_MANAGEMENT",
-                accentColor = CyberBlue
+                title = "Inventory",
+                subtitle = "Storage & Equipment",
+                accentColor = PremiumBlue
             )
 
             Spacer(modifier = Modifier.height(16.dp))
 
             HubSectionHeader("PERSONALIZATION")
             HubCategoryCard(
-                title = "BUDDY_DRESS_UP",
+                title = "Wardrobe",
                 subtitle = "Customize Appearance & Outfits",
                 icon = Icons.Default.Face,
-                color = CyberPink,
+                color = PremiumPink,
                 onClick = onNavigateToAppearance
             )
 
@@ -60,10 +60,10 @@ fun InventoryHubScreen(
 
             HubSectionHeader("LOGISTICS")
             HubCategoryCard(
-                title = "CARGO_HOLD",
-                subtitle = "Items, Consumables & Goods",
+                title = "Inventory",
+                subtitle = "Items, consumables & supplies",
                 icon = Icons.AutoMirrored.Filled.List,
-                color = CyberBlue,
+                color = PremiumBlue,
                 onClick = onNavigateToCargo
             )
 
@@ -71,3 +71,4 @@ fun InventoryHubScreen(
         }
     }
 }
+

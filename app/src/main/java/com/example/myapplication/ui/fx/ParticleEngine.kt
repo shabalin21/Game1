@@ -9,12 +9,15 @@ import javax.inject.Singleton
 class ParticleEngine @Inject constructor() {
     val maxParticles = 500
     private val pool = ParticlePool(maxParticles)
-    val activeParticles = mutableStateListOf<Particle>()
+    
+    // Performance: Use a regular ArrayList to avoid massive recompositions on each update.
+    // The Canvas will be triggered to redraw via a separate frame clock.
+    val particles = ArrayList<Particle>(maxParticles)
 
     fun update(deltaTime: Float) {
-        if (activeParticles.isEmpty()) return
+        if (particles.isEmpty()) return
 
-        val iterator = activeParticles.listIterator()
+        val iterator = particles.iterator()
         while (iterator.hasNext()) {
             val particle = iterator.next()
             particle.update(deltaTime)
@@ -33,6 +36,8 @@ class ParticleEngine @Inject constructor() {
         scale: Float = 1f,
         type: ParticleType = ParticleType.SPARKLE
     ) {
+        if (particles.size >= maxParticles) return
+        
         val particle = pool.obtain() ?: return
         particle.x = x
         particle.y = y
@@ -44,7 +49,7 @@ class ParticleEngine @Inject constructor() {
         particle.scale = scale
         particle.type = type
         particle.isActive = true
-        activeParticles.add(particle)
+        particles.add(particle)
     }
 
     // Specialized Spawners

@@ -2,13 +2,16 @@ package com.example.myapplication.ui.screen.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.myapplication.domain.interaction.PetInteractionSystem
+import com.example.myapplication.core.CanonicalState
+import com.example.myapplication.domain.admin.CheatManager
 import com.example.myapplication.domain.model.*
-import com.example.myapplication.domain.repository.EconomyRepository
 import com.example.myapplication.domain.repository.InventoryRepository
-import com.example.myapplication.domain.state.GameStateManager
+import com.example.myapplication.domain.social.SocialManager
+import com.example.myapplication.domain.market.MarketSimulationEngine
+import com.example.myapplication.domain.repository.PetRepository
 import com.example.myapplication.domain.usecase.ProcessSimulationTickUseCase
-import com.example.myapplication.domain.usecase.WorkHarderUseCase
+import com.example.myapplication.ui.render.RenderState
+import com.example.myapplication.ui.render.SnapshotReducer
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -21,17 +24,21 @@ data class FoodInventoryItem(
 
 @HiltViewModel
 class PetViewModel @Inject constructor(
-    val interactionSystem: PetInteractionSystem,
+    private val intentDispatcher: com.example.myapplication.domain.event.IntentDispatcher,
     private val inventoryRepository: InventoryRepository,
-    private val economyRepository: EconomyRepository,
-    private val gameStateManager: GameStateManager,
+    private val canonicalState: CanonicalState,
     private val processSimulationTickUseCase: ProcessSimulationTickUseCase,
-    private val workHarderUseCase: WorkHarderUseCase,
-    private val marketEngine: com.example.myapplication.domain.market.MarketSimulationEngine,
-    private val socialManager: com.example.myapplication.domain.social.SocialManager
+    private val marketEngine: MarketSimulationEngine,
+    private val socialManager: SocialManager,
+    private val snapshotReducer: SnapshotReducer,
+    val cheatManager: CheatManager,
+    private val petRepository: PetRepository // Added for manual tick logic
 ) : ViewModel() {
 
-    val gameState = gameStateManager.gameState
+    val gameState = canonicalState.state
+
+    val renderState = gameState.map { snapshotReducer.reduce(it) }
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), null)
 
     val btcPrice = marketEngine.assets.map { list ->
         list.find { it.id == "BTC" }?.currentPrice ?: 0f
@@ -70,93 +77,35 @@ class PetViewModel @Inject constructor(
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
     fun feedPet(itemId: String) {
-        val currentPet = petState.value ?: return
-        viewModelScope.launch {
-            interactionSystem.feed(currentPet, itemId)
-        }
+        intentDispatcher.dispatch(com.example.myapplication.domain.event.GameplayIntent.Pet.Feed(itemId))
     }
 
     fun petThePet() {
-        val currentPet = petState.value ?: return
-        viewModelScope.launch {
-            interactionSystem.pet(currentPet)
-        }
+        intentDispatcher.dispatch(com.example.myapplication.domain.event.GameplayIntent.Pet.Petting)
     }
 
     fun playWithPet() {
-        val currentPet = petState.value ?: return
-        viewModelScope.launch {
-            interactionSystem.play(currentPet)
-        }
+        intentDispatcher.dispatch(com.example.myapplication.domain.event.GameplayIntent.Pet.Play)
     }
 
     fun toggleSleep() {
-        val currentPet = petState.value ?: return
-        viewModelScope.launch {
-            interactionSystem.toggleSleep(currentPet)
-        }
-    }
-
-    fun updatePetStat(statName: String, value: Float) {
-        viewModelScope.launch {
-            interactionSystem.simulationManager.updatePetState { pet ->
-                val newStats = when (statName.lowercase()) {
-                    "hunger" -> pet.stats.copy(hunger = value)
-                    "energy" -> pet.stats.copy(energy = value)
-                    "happiness" -> pet.stats.copy(happiness = value)
-                    "health" -> pet.stats.copy(health = value)
-                    "hygiene" -> pet.stats.copy(hygiene = value)
-                    "social" -> pet.stats.copy(social = value)
-                    "stress" -> pet.stats.copy(stress = value)
-                    else -> pet.stats
-                }
-                pet.copy(stats = newStats)
-            }
-        }
+        intentDispatcher.dispatch(com.example.myapplication.domain.event.GameplayIntent.Pet.ToggleSleep)
     }
 
     fun tickManual(hours: Int) {
         viewModelScope.launch {
             // Jump forward in time by processing multiple ticks or one large tick
             val jumpMillis = hours * 3600000L
-            val targetTime = System.currentTimeMillis() + jumpMillis
             
-            // We can't easily "fake" the repository's last update timestamp from here
-            // unless we modify the PetModel directly.
-            interactionSystem.simulationManager.updatePetState { pet ->
-                pet.copy(lastUpdateTimestamp = pet.lastUpdateTimestamp - jumpMillis)
-            }
+            val currentPet = petRepository.getPetState().firstOrNull() ?: return@launch
+            petRepository.savePetState(currentPet.copy(lastUpdateTimestamp = currentPet.lastUpdateTimestamp - jumpMillis))
+            
             // Then trigger a normal tick which will see the large delta
             processSimulationTickUseCase(System.currentTimeMillis())
         }
     }
 
     fun executeCommand(command: String) {
-        val parts = command.trim().lowercase().split(" ")
-        if (parts.isEmpty()) return
-
-        when (parts[0]) {
-            "/set" -> {
-                if (parts.size >= 3) {
-                    val stat = parts[1]
-                    val value = parts[2].toFloatOrNull() ?: return
-                    updatePetStat(stat, value)
-                }
-            }
-            "/tick" -> {
-                if (parts.size >= 2) {
-                    val hours = parts[1].toIntOrNull() ?: return
-                    tickManual(hours)
-                }
-            }
-            "/coins" -> {
-                if (parts.size >= 2) {
-                    val amount = parts[1].toIntOrNull() ?: return
-                    viewModelScope.launch {
-                        economyRepository.addCoins(amount)
-                    }
-                }
-            }
-        }
+        intentDispatcher.dispatch(com.example.myapplication.domain.event.GameplayIntent.Admin.ExecuteCommand(command))
     }
 }

@@ -7,7 +7,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.example.myapplication.ui.debug.DevLabManager
-import com.example.myapplication.ui.theme.NeonOrange
+import com.example.myapplication.ui.theme.PremiumOrange
 
 @Composable
 fun EconomyModule(
@@ -17,7 +17,7 @@ fun EconomyModule(
     onSetCoins: (Int) -> Unit
 ) {
     Column(modifier = Modifier.fillMaxWidth().padding(8.dp)) {
-        Text("Coins: $currentCoins", color = NeonOrange, style = MaterialTheme.typography.titleMedium)
+        Text("Coins: $currentCoins", color = PremiumOrange, style = MaterialTheme.typography.titleMedium)
         
         Spacer(modifier = Modifier.height(16.dp))
         
@@ -38,3 +38,4 @@ fun EconomyModule(
         }
     }
 }
+

@@ -1,66 +1,35 @@
 package com.example.myapplication.domain.interaction
 
-import com.example.myapplication.domain.event.GameplayEvent
-import com.example.myapplication.domain.event.GameplayEventManager
-import com.example.myapplication.domain.model.Mood
 import com.example.myapplication.domain.model.PetModel
-import com.example.myapplication.domain.simulation.MoodEngine
-import com.example.myapplication.domain.simulation.SimulationManager
-import com.example.myapplication.ui.animation.InteractionType
-import com.example.myapplication.ui.animation.JuiceEvent
-import com.example.myapplication.ui.animation.JuiceManager
-import java.util.concurrent.TimeUnit
+import com.example.myapplication.domain.usecase.*
 import javax.inject.Inject
 import javax.inject.Singleton
 
 /**
  * Handles logic for direct player interactions with the pet.
+ * Refactored to delegate to specialized Use Cases.
  */
 @Singleton
 class PetInteractionSystem @Inject constructor(
-    private val eventManager: GameplayEventManager,
-    val simulationManager: SimulationManager,
-    private val moodEngine: MoodEngine,
-    private val juiceManager: JuiceManager
+    private val feedPetUseCase: FeedPetUseCase,
+    private val petThePetUseCase: PetThePetUseCase,
+    private val toggleSleepUseCase: ToggleSleepUseCase,
+    private val playWithPetUseCase: PlayWithPetUseCase
 ) {
 
     suspend fun feed(pet: PetModel, itemId: String) {
-        if (simulationManager.useItem(itemId)) {
-            val newEmotion = moodEngine.addModifier(
-                pet.emotionState,
-                Mood.EXCITED,
-                0.8f,
-                TimeUnit.MINUTES.toMillis(5),
-                "FEED"
-            )
-            simulationManager.updatePetState { it.copy(emotionState = newEmotion) }
-            juiceManager.triggerEffect(JuiceEvent.Interaction(InteractionType.FEED))
-            eventManager.dispatchNonBlocking(GameplayEvent.FoodConsumed(itemId, 10f))
-        }
+        feedPetUseCase(itemId)
     }
 
     suspend fun pet(pet: PetModel) {
-        val newEmotion = moodEngine.addModifier(
-            pet.emotionState,
-            Mood.HAPPY,
-            0.6f,
-            TimeUnit.MINUTES.toMillis(3),
-            "PET"
-        )
-        simulationManager.updatePetState { it.copy(emotionState = newEmotion) }
-        juiceManager.triggerEffect(JuiceEvent.Interaction(InteractionType.PET))
-        simulationManager.processManualPetting()
-        eventManager.dispatchNonBlocking(GameplayEvent.PetInteracted(com.example.myapplication.domain.event.InteractionType.PET))
+        petThePetUseCase()
     }
 
     suspend fun play(pet: PetModel) {
-        // Direct "Play" button now opens Minigame Hub instead of a stat boost?
-        // Actually, let's keep it as a small boost if needed, but minigames are primary.
-        simulationManager.processManualPetting()
-        eventManager.dispatchNonBlocking(GameplayEvent.PetInteracted(com.example.myapplication.domain.event.InteractionType.PLAY))
+        playWithPetUseCase()
     }
 
     suspend fun toggleSleep(pet: PetModel) {
-        simulationManager.toggleSleep()
+        toggleSleepUseCase()
     }
 }

@@ -15,7 +15,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.myapplication.ui.theme.NeonPurple
+import com.example.myapplication.ui.theme.PremiumPurple
 
 @Composable
 fun CommandConsoleModule(
@@ -66,9 +66,9 @@ fun CommandConsoleModule(
                 }
             }),
             colors = OutlinedTextFieldDefaults.colors(
-                focusedBorderColor = NeonPurple,
+                focusedBorderColor = PremiumPurple,
                 unfocusedBorderColor = Color.White.copy(alpha = 0.2f),
-                cursorColor = NeonPurple
+                cursorColor = PremiumPurple
             )
         )
         
@@ -80,3 +80,4 @@ fun CommandConsoleModule(
         )
     }
 }
+

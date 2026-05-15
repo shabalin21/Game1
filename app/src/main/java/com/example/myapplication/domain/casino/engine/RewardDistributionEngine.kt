@@ -1,7 +1,7 @@
 package com.example.myapplication.domain.casino.engine
 
+import com.example.myapplication.core.EventBus
 import com.example.myapplication.domain.event.GameplayEvent
-import com.example.myapplication.domain.event.GameplayEventManager
 import com.example.myapplication.domain.model.Mood
 import com.example.myapplication.domain.repository.EconomyRepository
 import com.example.myapplication.domain.repository.PetRepository
@@ -18,15 +18,15 @@ class RewardDistributionEngine @Inject constructor(
     private val petRepository: PetRepository,
     private val moodEngine: MoodEngine,
     private val logManager: TerminalLogManager,
-    private val eventManager: GameplayEventManager
+    private val eventBus: EventBus
 ) {
 
     suspend fun distributeWin(amount: Int, game: String, isJackpot: Boolean = false) {
         economyRepository.addCoins(amount)
         logManager.log(LogCategory.CASINO, "[${game.uppercase()}] SUCCESS: +$amount CR")
         
-        eventManager.dispatch(GameplayEvent.CasinoWin(game, amount, isJackpot))
-        eventManager.dispatch(GameplayEvent.CasinoGamePlayed(game, 0))
+        eventBus.publish(GameplayEvent.CasinoWin(game, amount, isJackpot))
+        eventBus.publish(GameplayEvent.CasinoGamePlayed(game, 0))
 
         applyPsychologicalWin(amount)
     }
@@ -34,8 +34,8 @@ class RewardDistributionEngine @Inject constructor(
     suspend fun processLoss(amount: Int, game: String) {
         logManager.log(LogCategory.CASINO, "[${game.uppercase()}] DEFICIT: -$amount CR")
         
-        eventManager.dispatch(GameplayEvent.CasinoLoss(game, amount))
-        eventManager.dispatch(GameplayEvent.CasinoGamePlayed(game, amount))
+        eventBus.publish(GameplayEvent.CasinoLoss(game, amount))
+        eventBus.publish(GameplayEvent.CasinoGamePlayed(game, amount))
 
         applyPsychologicalLoss(amount)
     }
@@ -67,7 +67,7 @@ class RewardDistributionEngine @Inject constructor(
             ),
             psychology = pet.psychology.copy(
                 dopamineLevel = (pet.psychology.dopamineLevel + dopamineGain).coerceAtMost(100f),
-                addictionLevel = (pet.psychology.addictionLevel + 0.5f).coerceAtMost(100f),
+                addictionTendency = (pet.psychology.addictionTendency + 0.5f).coerceAtMost(100f),
                 impulseControl = (pet.psychology.impulseControl - 0.2f).coerceAtLeast(0f),
                 emotionalStability = (pet.psychology.emotionalStability + 1f).coerceAtMost(100f)
             ),
@@ -96,7 +96,7 @@ class RewardDistributionEngine @Inject constructor(
             ),
             psychology = pet.psychology.copy(
                 dopamineLevel = (pet.psychology.dopamineLevel - 10f).coerceAtLeast(0f),
-                addictionLevel = (pet.psychology.addictionLevel + 0.3f).coerceAtMost(100f),
+                addictionTendency = (pet.psychology.addictionTendency + 0.3f).coerceAtMost(100f),
                 emotionalStability = (pet.psychology.emotionalStability - 2f).coerceAtLeast(0f),
                 impulseControl = (pet.psychology.impulseControl - 0.5f).coerceAtLeast(0f)
             )

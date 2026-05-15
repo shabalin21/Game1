@@ -15,7 +15,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.myapplication.domain.model.PetModel
 import com.example.myapplication.ui.debug.DevLabManager
-import com.example.myapplication.ui.theme.NeonPurple
+import com.example.myapplication.ui.theme.PremiumPurple
 
 @Composable
 fun CreatureControlModule(
@@ -43,7 +43,7 @@ fun CreatureControlModule(
                 modifier = Modifier.padding(bottom = 16.dp)
             ) {
                 Column(modifier = Modifier.padding(8.dp)) {
-                    Text("CURRENT INTENT", fontSize = 10.sp, color = NeonPurple, fontWeight = FontWeight.Black)
+                    Text("CURRENT INTENT", fontSize = 10.sp, color = PremiumPurple, fontWeight = FontWeight.Black)
                     Text(pet.psychology.currentActivity.name, fontSize = 14.sp, color = Color.White, fontWeight = FontWeight.Bold)
                 }
             }
@@ -112,11 +112,12 @@ fun StatSlider(
             onValueChange = onValueChange,
             valueRange = 0f..100f,
             colors = SliderDefaults.colors(
-                thumbColor = if (isFrozen) Color.Cyan else NeonPurple,
-                activeTrackColor = if (isFrozen) Color.Cyan.copy(alpha = 0.5f) else NeonPurple.copy(alpha = 0.5f),
+                thumbColor = if (isFrozen) Color.Cyan else PremiumPurple,
+                activeTrackColor = if (isFrozen) Color.Cyan.copy(alpha = 0.5f) else PremiumPurple.copy(alpha = 0.5f),
                 inactiveTrackColor = Color.White.copy(alpha = 0.1f)
             ),
             modifier = Modifier.height(24.dp)
         )
     }
 }
+

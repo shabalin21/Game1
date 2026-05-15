@@ -3,7 +3,6 @@ package com.example.myapplication
 import android.app.Application
 import com.example.myapplication.domain.repository.PetRepository
 import com.example.myapplication.domain.repository.StatisticsRepository
-import com.example.myapplication.domain.simulation.GameLoopManager
 import com.example.myapplication.domain.stats.StatisticsManager
 import dagger.hilt.android.HiltAndroidApp
 import kotlinx.coroutines.*
@@ -14,7 +13,7 @@ import javax.inject.Inject
 class PetApplication : Application() {
 
     @Inject
-    lateinit var gameLoopManager: GameLoopManager
+    lateinit var worldKernel: com.example.myapplication.core.WorldKernel
 
     @Inject
     lateinit var statisticsManager: StatisticsManager
@@ -26,7 +25,7 @@ class PetApplication : Application() {
     lateinit var statisticsRepository: StatisticsRepository
 
     @Inject
-    lateinit var missionDispatcher: com.example.myapplication.domain.progression.mission.MissionDispatcher
+    lateinit var juiceBridge: com.example.myapplication.ui.animation.JuiceBridge
 
     private val applicationScope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
 
@@ -47,10 +46,10 @@ class PetApplication : Application() {
                     statisticsRepository.ensureStatisticsExists()
                 }
                 
-                Timber.d("Application: Starting managers...")
+                Timber.d("Application: Booting WorldKernel...")
                 statisticsManager.start()
-                missionDispatcher.start()
-                gameLoopManager.start()
+                juiceBridge.start()
+                worldKernel.boot()
                 Timber.i("Application: Initialization complete.")
             } catch (e: Exception) {
                 Timber.e(e, "CRITICAL: Application initialization failed")

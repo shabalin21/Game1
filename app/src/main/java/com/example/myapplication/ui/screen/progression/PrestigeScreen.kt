@@ -33,7 +33,7 @@ fun PrestigeScreen(
     }
 
     Box(modifier = Modifier.fillMaxSize()) {
-        CyberBackground(accentColor = CyberPurple)
+        CyberBackground(accentColor = PremiumPurple)
 
         Column(
             modifier = Modifier
@@ -47,7 +47,7 @@ fun PrestigeScreen(
             ScreenHeader(
                 title = "REBIRTH_PROTOCOL",
                 subtitle = "INFINITE_EVOLUTION",
-                accentColor = CyberPurple,
+                accentColor = PremiumPurple,
                 onBack = onBack
             )
 
@@ -72,10 +72,10 @@ fun PrestigeScreen(
 
             Spacer(modifier = Modifier.weight(1f))
 
-            CyberCard(accentColor = if (canPrestige) CyberPurple else Color.White.copy(alpha = 0.1f)) {
+            CyberCard(accentColor = if (canPrestige) PremiumPurple else Color.White.copy(alpha = 0.1f)) {
                 Column(modifier = Modifier.padding(16.dp), horizontalAlignment = Alignment.CenterHorizontally) {
                     Text("PERMANENT BONUS", style = MaterialTheme.typography.labelSmall, color = Color.White.copy(alpha = 0.5f))
-                    Text("+50% INCOME", style = MaterialTheme.typography.titleLarge, color = CyberPurple, fontWeight = FontWeight.Black)
+                    Text("+50% INCOME", style = MaterialTheme.typography.titleLarge, color = PremiumPurple, fontWeight = FontWeight.Black)
                 }
             }
 
@@ -91,7 +91,7 @@ fun PrestigeScreen(
                     }
                 },
                 enabled = canPrestige,
-                color = CyberPurple,
+                color = PremiumPurple,
                 modifier = Modifier.fillMaxWidth()
             )
 
@@ -99,7 +99,7 @@ fun PrestigeScreen(
                 Text(
                     "REQUIREMENT: LVL 100 OR 10M CR",
                     style = MaterialTheme.typography.labelSmall,
-                    color = CyberRed,
+                    color = PremiumRed,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.padding(top = 12.dp)
                 )
@@ -109,3 +109,4 @@ fun PrestigeScreen(
         }
     }
 }
+

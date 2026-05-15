@@ -45,7 +45,7 @@ fun CasinoScreen(
     var selectedGame by remember { mutableStateOf(CasinoGameType.BLACKJACK) }
 
     Box(modifier = Modifier.fillMaxSize()) {
-        NeonBackground(accentColor = NeonYellow)
+        NeonBackground(accentColor = PremiumGold)
 
         val isBanned = pet?.casinoSession?.isBanned == true
 
@@ -74,7 +74,7 @@ fun CasinoScreen(
                             else -> CasinoRules.blackjack
                         }
                     }) {
-                        Icon(Icons.Default.Info, contentDescription = "Rules", tint = NeonBlue)
+                        Icon(Icons.Default.Info, contentDescription = "Rules", tint = PremiumBlue)
                     }
                 },
                 tabs = {
@@ -129,7 +129,7 @@ fun CasinoScreen(
                 },
                 logs = {
                     Column {
-                        GameSectionHeader("Recent Wins", color = NeonYellow)
+                        GameSectionHeader("Recent Wins", color = PremiumGold)
                         TerminalLogView(
                             logs = logs,
                             modifier = Modifier
@@ -161,7 +161,7 @@ fun CasinoEntryGate(
             .background(Color.Black.copy(alpha = 0.9f)),
         contentAlignment = Alignment.Center
     ) {
-        NeonCard(accentColor = if (canAfford) NeonBlue else NeonRed, modifier = Modifier.padding(32.dp)) {
+        NeonCard(accentColor = if (canAfford) PremiumBlue else PremiumRed, modifier = Modifier.padding(32.dp)) {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier.padding(16.dp)
@@ -169,14 +169,14 @@ fun CasinoEntryGate(
                 Icon(
                     Icons.Default.Warning, 
                     contentDescription = null, 
-                    tint = if (canAfford) NeonBlue else NeonRed,
+                    tint = if (canAfford) PremiumBlue else PremiumRed,
                     modifier = Modifier.size(48.dp)
                 )
                 Spacer(modifier = Modifier.height(16.dp))
                 Text(
                     text = if (canAfford) "Welcome back" else "Low Balance",
                     style = MaterialTheme.typography.titleLarge,
-                    color = if (canAfford) NeonBlue else NeonRed,
+                    color = if (canAfford) PremiumBlue else PremiumRed,
                     fontWeight = FontWeight.Black
                 )
                 Text(
@@ -191,12 +191,12 @@ fun CasinoEntryGate(
                     NeonButton(
                         text = "Enter Lounge",
                         onClick = onEnter,
-                        color = NeonBlue
+                        color = PremiumBlue
                     )
                 } else {
                     Text(
                         "Access Denied",
-                        color = NeonRed,
+                        color = PremiumRed,
                         style = MaterialTheme.typography.labelSmall,
                         fontWeight = FontWeight.Bold
                     )
@@ -205,3 +205,4 @@ fun CasinoEntryGate(
         }
     }
 }
+

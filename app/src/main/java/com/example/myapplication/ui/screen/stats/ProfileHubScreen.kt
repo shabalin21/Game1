@@ -15,21 +15,16 @@ import com.example.myapplication.ui.theme.*
 import com.example.myapplication.ui.screen.outside.HubCategoryCard
 import com.example.myapplication.ui.screen.outside.HubSectionHeader
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.sp
-
 @Composable
 fun ProfileHubScreen(
     onNavigateToStats: () -> Unit,
+    onNavigateToMissions: () -> Unit,
     onNavigateToPrestige: () -> Unit,
     onNavigateToDebug: () -> Unit,
     onNavigateToSettings: () -> Unit
 ) {
     Box(modifier = Modifier.fillMaxSize()) {
-        CyberBackground(accentColor = CyberBlue)
+        CyberBackground(accentColor = PremiumBlue)
 
         Column(
             modifier = Modifier
@@ -39,11 +34,11 @@ fun ProfileHubScreen(
                 .verticalScroll(rememberScrollState())
         ) {
             Spacer(modifier = Modifier.height(24.dp))
-            
+
             ScreenHeader(
                 title = "USER_PROFILE",
                 subtitle = "NEURAL_SYNCHRONIZATION",
-                accentColor = CyberBlue
+                accentColor = PremiumBlue
             )
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -53,7 +48,7 @@ fun ProfileHubScreen(
                 title = "STATISTICS_CORE",
                 subtitle = "Achievements & Analytics",
                 icon = Icons.Default.Info,
-                color = CyberBlue,
+                color = PremiumBlue,
                 onClick = onNavigateToStats
             )
 
@@ -61,10 +56,18 @@ fun ProfileHubScreen(
 
             HubSectionHeader("EVOLUTION")
             HubCategoryCard(
-                title = "PRESTIGE_PROTOCOL",
+                title = "MISSION_TERMINAL",
+                subtitle = "Active Objectives & Rewards",
+                icon = Icons.Default.List,
+                color = PremiumGreen,
+                onClick = onNavigateToMissions
+            )
+
+            HubCategoryCard(
+                title = "Prestige",
                 subtitle = "Rebirth & Ascension",
                 icon = Icons.Default.KeyboardArrowUp,
-                color = CyberPurple,
+                color = PremiumPurple,
                 onClick = onNavigateToPrestige
             )
 
@@ -80,10 +83,10 @@ fun ProfileHubScreen(
             )
 
             HubCategoryCard(
-                title = "ROOT_ACCESS",
+                title = "Cheat Menu",
                 subtitle = "Developer Calibration",
                 icon = Icons.Default.Build,
-                color = CyberRed,
+                color = PremiumRed,
                 onClick = onNavigateToDebug
             )
 

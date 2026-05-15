@@ -26,11 +26,10 @@ fun StatsScreen(
 ) {
     val pet by viewModel.petState.collectAsState()
     val stats by viewModel.statistics.collectAsState()
-
     Box(
         modifier = Modifier.fillMaxSize()
     ) {
-        NeonBackground(accentColor = NeonBlue)
+        NeonBackground(accentColor = PremiumBlue)
 
         Column(
             modifier = Modifier
@@ -44,7 +43,7 @@ fun StatsScreen(
             ScreenHeader(
                 title = "Statistics",
                 subtitle = "Life Analytics",
-                accentColor = NeonBlue,
+                accentColor = PremiumBlue,
                 onBack = onBack
             )
 
@@ -65,16 +64,16 @@ fun StatsScreen(
 fun LifetimeStatsGrid(pet: PetModel, stats: LifetimeStats) {
     Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
         Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-            StatItemCard("Active Time", formatTime(stats.totalPlayTimeMillis), "⏱️", NeonBlue, Modifier.weight(1f))
-            StatItemCard("Coins Earned", stats.totalCoinsEarned.toString(), "💰", NeonYellow, Modifier.weight(1f))
+            StatItemCard("Active Time", formatTime(stats.totalPlayTimeMillis), "⏱️", PremiumBlue, Modifier.weight(1f))
+            StatItemCard("Coins Earned", stats.totalCoinsEarned.toString(), "💰", PremiumGold, Modifier.weight(1f))
         }
         Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-            StatItemCard("Food Eaten", stats.totalFoodEaten.toString(), "🍎", NeonPink, Modifier.weight(1f))
-            StatItemCard("Games Played", stats.miniGamesPlayed.toString(), "🎮", NeonPurple, Modifier.weight(1f))
+            StatItemCard("Food Eaten", stats.totalFoodEaten.toString(), "🍎", PremiumPink, Modifier.weight(1f))
+            StatItemCard("Games Played", stats.miniGamesPlayed.toString(), "🎮", PremiumPurple, Modifier.weight(1f))
         }
         Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-            StatItemCard("Survival", "${calculateAge(pet.birthTimestamp)} Days", "🎂", NeonGreen, Modifier.weight(1f))
-            StatItemCard("Interactions", stats.interactionsCount.toString(), "💖", NeonPink, Modifier.weight(1f))
+            StatItemCard("Survival", "${calculateAge(pet.birthTimestamp)} Days", "🎂", PremiumGreen, Modifier.weight(1f))
+            StatItemCard("Interactions", stats.interactionsCount.toString(), "💖", PremiumPink, Modifier.weight(1f))
         }
     }
 }
@@ -93,12 +92,12 @@ fun StatItemCard(label: String, value: String, emoji: String, accentColor: Color
             Spacer(modifier = Modifier.height(8.dp))
             Text(
                 text = value, 
-                style = MaterialTheme.typography.titleMedium, 
+                style = MaterialTheme.typography.titleMedium,
                 color = Color.White
             )
             Text(
                 text = label.uppercase(),
-                style = MaterialTheme.typography.labelSmall, 
+                style = MaterialTheme.typography.labelSmall,
                 color = accentColor.copy(alpha = 0.6f)
             )
         }
@@ -110,17 +109,17 @@ fun CasinoAnalyticsSection(stats: LifetimeStats) {
     Text(
         text = "Casino Activity",
         style = MaterialTheme.typography.labelSmall,
-        color = NeonPink.copy(alpha = 0.6f),
+        color = PremiumPink.copy(alpha = 0.6f),
         fontWeight = FontWeight.Bold
     )
     Spacer(modifier = Modifier.height(12.dp))
     
-    NeonCard(accentColor = NeonPink) {
+    NeonCard(accentColor = PremiumPink) {
         Column(modifier = Modifier.padding(vertical = 4.dp)) {
-            AnalyticsRow("Total Wins", stats.casinoWins.toString(), NeonGreen)
-            AnalyticsRow("Total Losses", stats.casinoLosses.toString(), NeonRed)
-            AnalyticsRow("Best Payout", "${stats.biggestCasinoWin} CR", NeonBlue)
-            AnalyticsRow("Jackpots", stats.casinoJackpots.toString(), NeonYellow)
+            AnalyticsRow("Total Wins", stats.casinoWins.toString(), PremiumGreen)
+            AnalyticsRow("Total Losses", stats.casinoLosses.toString(), PremiumRed)
+            AnalyticsRow("Best Payout", "${stats.biggestCasinoWin} CR", PremiumBlue)
+            AnalyticsRow("Jackpots", stats.casinoJackpots.toString(), PremiumGold)
             
             Spacer(modifier = Modifier.height(12.dp))
             HorizontalDivider(color = Color.White.copy(alpha = 0.05f))
@@ -130,15 +129,15 @@ fun CasinoAnalyticsSection(stats: LifetimeStats) {
                 (stats.casinoWins.toFloat() / stats.gamblingExposureCount * 100).toInt()
             } else 0
             
-            AnalyticsRow("Win Rate", "$winRate%", NeonBlue)
-            AnalyticsRow("Risk Level", "${stats.addictionIntensity.toInt()}%", NeonPurple)
+            AnalyticsRow("Win Rate", "$winRate%", PremiumBlue)
+            AnalyticsRow("Risk Level", "${stats.addictionIntensity.toInt()}%", PremiumPurple)
             
             if (stats.addictionIntensity > 50f) {
                 Spacer(modifier = Modifier.height(16.dp))
-                NeonCard(accentColor = NeonRed) {
+                NeonCard(accentColor = PremiumRed) {
                     Text(
                         "Caution: High Risk Play Detected",
-                        color = NeonRed,
+                        color = PremiumRed,
                         style = MaterialTheme.typography.labelSmall,
                         fontWeight = FontWeight.Black,
                         modifier = Modifier.align(Alignment.CenterHorizontally)
@@ -172,3 +171,4 @@ private fun calculateAge(birthTimestamp: Long): Long {
     val diff = System.currentTimeMillis() - birthTimestamp
     return TimeUnit.MILLISECONDS.toDays(diff).coerceAtLeast(1)
 }
+

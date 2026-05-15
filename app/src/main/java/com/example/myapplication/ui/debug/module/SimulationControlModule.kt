@@ -12,7 +12,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.myapplication.ui.debug.DevLabManager
-import com.example.myapplication.ui.theme.NeonPurple
+import com.example.myapplication.ui.theme.PremiumPurple
 
 import java.util.Locale
 
@@ -45,8 +45,8 @@ fun SimulationControlModule(
                 checked = manager.simulationPaused,
                 onCheckedChange = { manager.toggleSimulationPause() },
                 colors = SwitchDefaults.colors(
-                    checkedThumbColor = NeonPurple,
-                    checkedTrackColor = NeonPurple.copy(alpha = 0.5f)
+                    checkedThumbColor = PremiumPurple,
+                    checkedTrackColor = PremiumPurple.copy(alpha = 0.5f)
                 )
             )
         }
@@ -61,8 +61,8 @@ fun SimulationControlModule(
                 checked = manager.godModeEnabled,
                 onCheckedChange = { manager.toggleGodMode() },
                 colors = SwitchDefaults.colors(
-                    checkedThumbColor = NeonPurple,
-                    checkedTrackColor = NeonPurple.copy(alpha = 0.5f)
+                    checkedThumbColor = PremiumPurple,
+                    checkedTrackColor = PremiumPurple.copy(alpha = 0.5f)
                 )
             )
         }
@@ -78,7 +78,7 @@ fun SimulationControlModule(
             value = manager.timeDilation,
             onValueChange = { manager.setTimeDilationValue(it) },
             valueRange = 1f..10f,
-            colors = SliderDefaults.colors(thumbColor = NeonPurple, activeTrackColor = NeonPurple)
+            colors = SliderDefaults.colors(thumbColor = PremiumPurple, activeTrackColor = PremiumPurple)
         )
 
         Spacer(modifier = Modifier.height(24.dp))
@@ -126,3 +126,4 @@ fun TickButton(label: String, onClick: () -> Unit) {
         Text(label, fontSize = 10.sp, fontWeight = FontWeight.Bold)
     }
 }
+

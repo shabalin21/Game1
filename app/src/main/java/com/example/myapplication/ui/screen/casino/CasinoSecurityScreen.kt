@@ -29,7 +29,7 @@ fun CasinoSecurityScreen(
     ) {
         CyberCard(
             modifier = Modifier.padding(24.dp),
-            accentColor = CyberRed
+            accentColor = PremiumRed
         ) {
             Column(
                 modifier = Modifier.padding(24.dp),
@@ -38,7 +38,7 @@ fun CasinoSecurityScreen(
                 Text(
                     text = "SECURITY INTERCEPTION",
                     style = MaterialTheme.typography.headlineSmall,
-                    color = CyberRed,
+                    color = PremiumRed,
                     fontWeight = FontWeight.Black,
                     letterSpacing = 2.sp
                 )
@@ -65,7 +65,7 @@ fun CasinoSecurityScreen(
                 CyberButton(
                     text = "PAY $reEntryFee CR",
                     onClick = onPayReEntry,
-                    color = CyberRed,
+                    color = PremiumRed,
                     modifier = Modifier.fillMaxWidth()
                 )
                 
@@ -78,3 +78,4 @@ fun CasinoSecurityScreen(
         }
     }
 }
+

@@ -6,9 +6,10 @@ import com.example.myapplication.data.local.PetDao
 import com.example.myapplication.data.local.PetDatabase
 import com.example.myapplication.data.local.StatisticsDao
 import com.example.myapplication.data.repository.*
-import com.example.myapplication.domain.event.GameplayEventManager
+import com.example.myapplication.domain.admin.CheatManager
+import com.example.myapplication.core.EventBus
+import com.example.myapplication.domain.progression.PrestigeManager
 import com.example.myapplication.domain.repository.*
-import com.example.myapplication.domain.simulation.SimulationEngine
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -65,13 +66,13 @@ object AppModule {
     @Singleton
     fun provideEconomyRepository(
         petDao: PetDao,
-        eventManager: GameplayEventManager,
-        cheatManager: com.example.myapplication.domain.admin.CheatManager,
+        eventBus: EventBus,
+        cheatManager: CheatManager,
         json: Json
     ): EconomyRepository {
         return EconomyRepositoryImpl(
             petDao = petDao,
-            eventManager = eventManager,
+            eventBus = eventBus,
             cheatManager = cheatManager,
             json = json
         )
@@ -118,8 +119,8 @@ object AppModule {
         petRepository: PetRepository,
         economyRepository: EconomyRepository,
         statisticsRepository: StatisticsRepository
-    ): com.example.myapplication.domain.progression.PrestigeManager {
-        return com.example.myapplication.domain.progression.PrestigeManager(
+    ): PrestigeManager {
+        return PrestigeManager(
             petRepository,
             economyRepository,
             statisticsRepository

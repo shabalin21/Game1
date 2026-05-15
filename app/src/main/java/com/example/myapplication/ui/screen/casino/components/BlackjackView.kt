@@ -33,7 +33,7 @@ fun BlackjackView(
 ) {
     var selectedWager by remember { mutableIntStateOf(100) }
 
-    CasinoGameCard(accentColor = NeonBlue) {
+    CasinoGameCard(accentColor = PremiumBlue) {
         Column(
             modifier = Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally
@@ -50,7 +50,7 @@ fun BlackjackView(
                     when (state) {
                         is BlackjackState.Idle, is BlackjackState.Betting -> {
                             Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                                GameSectionHeader("Select Bet", color = NeonBlue)
+                                GameSectionHeader("Select Bet", color = PremiumBlue)
                                 Spacer(modifier = Modifier.height(16.dp))
                                 BettingControls(
                                     selectedWager = selectedWager,
@@ -58,7 +58,7 @@ fun BlackjackView(
                                     onAction = { onBet(selectedWager) },
                                     actionText = "DEAL",
                                     enabled = coins >= selectedWager,
-                                    accentColor = NeonBlue,
+                                    accentColor = PremiumBlue,
                                     maxCoins = coins,
                                     modifier = Modifier.fillMaxWidth(0.9f)
                                 )
@@ -120,13 +120,13 @@ fun BlackjackView(
                                                 NeonButton(
                                                     text = "Hit", 
                                                     onClick = onHit, 
-                                                    color = NeonCyan,
+                                                    color = PremiumCyan,
                                                     modifier = Modifier.weight(1f)
                                                 )
                                                 NeonButton(
                                                     text = "Stand", 
                                                     onClick = onStand, 
-                                                    color = NeonPink,
+                                                    color = PremiumPink,
                                                     modifier = Modifier.weight(1f)
                                                 )
                                             }
@@ -138,7 +138,7 @@ fun BlackjackView(
                                                 NeonButton(
                                                     text = "New Hand", 
                                                     onClick = { onBet(currentState.bet) }, 
-                                                    color = NeonBlue,
+                                                    color = PremiumBlue,
                                                     modifier = Modifier.width(160.dp)
                                                 )
                                             }
@@ -146,7 +146,7 @@ fun BlackjackView(
                                         else -> {
                                             Text(
                                                 "Dealing...", 
-                                                color = NeonBlue, 
+                                                color = PremiumBlue, 
                                                 style = MaterialTheme.typography.labelSmall,
                                                 fontWeight = FontWeight.Black
                                             )
@@ -179,7 +179,7 @@ fun HandDisplay(
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
                     "[$score]", 
-                    color = if (score > 21) NeonRed else NeonCyan, 
+                    color = if (score > 21) PremiumRed else PremiumCyan, 
                     fontSize = 11.sp, 
                     fontWeight = FontWeight.Black
                 )
@@ -215,7 +215,7 @@ fun BlackjackCardView(card: Card, hidden: Boolean, modifier: Modifier = Modifier
             .background(color)
             .border(
                 width = 1.dp, 
-                color = if (hidden) NeonBlue.copy(alpha = 0.5f) else Color.Black.copy(alpha = 0.1f), 
+                color = if (hidden) PremiumBlue.copy(alpha = 0.5f) else Color.Black.copy(alpha = 0.1f), 
                 shape = RoundedCornerShape(6.dp)
             ),
         contentAlignment = Alignment.Center
@@ -239,7 +239,7 @@ fun BlackjackCardView(card: Card, hidden: Boolean, modifier: Modifier = Modifier
             ) {
                 Text(
                     "?", 
-                    color = NeonBlue, 
+                    color = PremiumBlue, 
                     fontWeight = FontWeight.Black, 
                     fontSize = 18.sp
                 )
@@ -251,9 +251,9 @@ fun BlackjackCardView(card: Card, hidden: Boolean, modifier: Modifier = Modifier
 @Composable
 fun BlackjackResultBanner(outcome: BlackjackOutcome, payout: Int) {
     val (text, color) = when(outcome) {
-        BlackjackOutcome.WIN -> "Winner!" to NeonGreen
-        BlackjackOutcome.BLACKJACK -> "Blackjack!" to NeonYellow
-        BlackjackOutcome.LOSS -> "House Wins" to NeonRed
+        BlackjackOutcome.WIN -> "Winner!" to PremiumGreen
+        BlackjackOutcome.BLACKJACK -> "Blackjack!" to PremiumGold
+        BlackjackOutcome.LOSS -> "House Wins" to PremiumRed
         BlackjackOutcome.BUST -> "Bust!" to Color.Red
         BlackjackOutcome.PUSH -> "Push" to Color.Gray
     }
@@ -269,7 +269,7 @@ fun BlackjackResultBanner(outcome: BlackjackOutcome, payout: Int) {
         if (payout > 0) {
             Text(
                 "+$payout CR", 
-                color = NeonCyan, 
+                color = PremiumCyan, 
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Black
             )
@@ -293,3 +293,4 @@ private fun calculateScore(cards: List<Card>): Int {
     }
     return score
 }
+

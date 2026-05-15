@@ -18,16 +18,18 @@ class MoodEngine @Inject constructor() {
         currentEmotion: EmotionState,
         stats: PetStats,
         psychology: PsychologyState,
-        currentTimeMillis: Long
+        currentTimeMillis: Long,
+        world: WorldState,
+        memoryGraph: EmotionMemoryGraph = EmotionMemoryGraph()
     ): EmotionState {
         // 1. Decay/Expire temporary modifiers
         val activeModifiers = currentEmotion.modifiers.filter { it.expirationTimestamp > currentTimeMillis }
 
         // 2. Calculate Base Mood from Stats
-        val baseMood = determineBaseMood(stats)
+        val baseMood = determineBaseMood(stats, world)
 
         // 3. Blend with active modifiers, temperament biases, and memories
-        val weightedMood = blendMoods(baseMood, activeModifiers, psychology)
+        val weightedMood = blendMoods(baseMood, activeModifiers, psychology, memoryGraph, currentTimeMillis)
 
         // 4. Determine Intensity based on how extreme the stats are
         val newIntensity = calculateIntensity(stats, weightedMood)
@@ -90,8 +92,8 @@ class MoodEngine @Inject constructor() {
         return psychology.copy(memories = updatedMemories)
     }
 
-    private fun determineBaseMood(stats: PetStats): Mood {
-        return when {
+    private fun determineBaseMood(stats: PetStats, world: WorldState): Mood {
+        val base = when {
             stats.health < 20f -> Mood.SICK
             stats.energy < 15f -> Mood.SLEEPY
             stats.hunger < 15f -> Mood.ANGRY
@@ -101,17 +103,27 @@ class MoodEngine @Inject constructor() {
             stats.attention < 20f -> Mood.LONELY
             else -> Mood.RELAXED
         }
+        
+        // Weather Sensitivity
+        return when (world.weather) {
+            Weather.STORMY -> if (base == Mood.RELAXED || base == Mood.HAPPY) Mood.SAD else base
+            Weather.RAINY -> if (base == Mood.RELAXED) Mood.SLEEPY else base
+            else -> base
+        }
     }
 
     private fun blendMoods(
         base: Mood,
         modifiers: List<MoodModifier>,
-        psychology: PsychologyState
+        psychology: PsychologyState,
+        memoryGraph: EmotionMemoryGraph = EmotionMemoryGraph(),
+        currentTime: Long = System.currentTimeMillis()
     ): Mood {
         val temperament = psychology.temperament
         
-        // Influence of Memories
-        val traumaticMemories = psychology.memories.filter { it.emotionalValence < -0.7f }
+        // Influence of Memories (New Graph-based Logic)
+        val traumaticMemories = memoryGraph.nodes.values.filter { it.valence < -0.7f && it.getCurrentWeight(currentTime) > 0.3f }
+
         if (traumaticMemories.isNotEmpty() && base == Mood.RELAXED) {
             // Traumatic memories make the buddy more prone to sadness or boredom
             return if (temperament.independence > 0.7f) Mood.BORED else Mood.SAD

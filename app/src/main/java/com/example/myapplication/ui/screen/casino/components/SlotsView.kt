@@ -39,13 +39,13 @@ fun SlotsView(
         }
     }
 
-    CasinoGameCard(accentColor = NeonYellow) {
+    CasinoGameCard(accentColor = PremiumGold) {
         Column(
             modifier = Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            GameSectionHeader("Classic Slots", color = NeonYellow)
+            GameSectionHeader("Classic Slots", color = PremiumGold)
             
             Spacer(modifier = Modifier.height(24.dp))
 
@@ -56,7 +56,7 @@ fun SlotsView(
                     .height(140.dp)
                     .clip(RoundedCornerShape(12.dp))
                     .background(Color.Black.copy(alpha = 0.5f))
-                    .border(1.dp, NeonYellow.copy(alpha = 0.2f), RoundedCornerShape(12.dp)),
+                    .border(1.dp, PremiumGold.copy(alpha = 0.2f), RoundedCornerShape(12.dp)),
                 contentAlignment = Alignment.Center
             ) {
                 Row(
@@ -79,7 +79,7 @@ fun SlotsView(
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(2.dp)
-                        .background(NeonYellow.copy(alpha = 0.1f))
+                        .background(PremiumGold.copy(alpha = 0.1f))
                 )
             }
 
@@ -95,7 +95,7 @@ fun SlotsView(
                 },
                 actionText = if (isSpinning) "SPINNING..." else "SPIN",
                 enabled = !isSpinning && coins >= selectedWager,
-                accentColor = NeonYellow,
+                accentColor = PremiumGold,
                 maxCoins = coins
             )
 
@@ -140,7 +140,7 @@ fun SlotReel(
             .background(SurfaceDark)
             .border(
                 width = 1.dp,
-                color = if (isSpinning) NeonYellow.copy(alpha = 0.5f) else Color.White.copy(alpha = 0.05f),
+                color = if (isSpinning) PremiumGold.copy(alpha = 0.5f) else Color.White.copy(alpha = 0.05f),
                 shape = RoundedCornerShape(8.dp)
             ),
         contentAlignment = Alignment.Center
@@ -176,7 +176,7 @@ fun SlotResultBanner(payout: Int, isJackpot: Boolean) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         Text(
             text = if (isJackpot) "JACKPOT!" else if (isWin) "You Won!" else "Try Again",
-            color = if (isJackpot) NeonYellow else if (isWin) NeonGreen else Color.White.copy(alpha = 0.3f),
+            color = if (isJackpot) PremiumGold else if (isWin) PremiumGreen else Color.White.copy(alpha = 0.3f),
             fontWeight = FontWeight.Black,
             fontSize = 18.sp,
             letterSpacing = 1.sp
@@ -184,10 +184,11 @@ fun SlotResultBanner(payout: Int, isJackpot: Boolean) {
         if (isWin) {
             Text(
                 text = "+$payout CR",
-                color = NeonCyan,
+                color = PremiumCyan,
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Black
             )
         }
     }
 }
+

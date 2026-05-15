@@ -142,12 +142,12 @@ fun VoidRunnerGame(
             
             // Draw Player
             drawRect(
-                color = NeonBlue,
+                color = PremiumBlue,
                 topLeft = Offset(playerX * w - 30f, 0.85f * h - 30f),
                 size = Size(60f, 60f)
             )
             drawRect(
-                color = NeonBlue.copy(alpha = 0.3f),
+                color = PremiumBlue.copy(alpha = 0.3f),
                 topLeft = Offset(playerX * w - 40f, 0.85f * h - 40f),
                 size = Size(80f, 80f)
             )
@@ -155,7 +155,7 @@ fun VoidRunnerGame(
             // Draw Obstacles
             obstacles.forEach { obs ->
                 drawRect(
-                    color = NeonPink,
+                    color = PremiumPink,
                     topLeft = Offset(obs.x * w - 50f, obs.y * h - 25f),
                     size = Size(100f, 50f)
                 )
@@ -183,11 +183,11 @@ fun VoidRunnerGame(
             if (gameState == VoidGameState.START) {
                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        Text("VOID RUNNER", color = NeonBlue, fontWeight = FontWeight.Black, fontSize = 48.sp)
+                        Text("VOID RUNNER", color = PremiumBlue, fontWeight = FontWeight.Black, fontSize = 48.sp)
                         Text("Drag to Move. Avoid Pink Walls. Collect Yellow Shards.", color = Color.White.copy(alpha = 0.6f), modifier = Modifier.padding(bottom = 32.dp))
                         Button(
                             onClick = { gameState = VoidGameState.PLAYING },
-                            colors = ButtonDefaults.buttonColors(containerColor = NeonBlue),
+                            colors = ButtonDefaults.buttonColors(containerColor = PremiumBlue),
                             shape = RoundedCornerShape(16.dp)
                         ) {
                             Text("START RUN", color = Color.Black, fontWeight = FontWeight.Bold)
@@ -198,13 +198,13 @@ fun VoidRunnerGame(
 
             if (gameState == VoidGameState.ENDED) {
                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    GlassCard(borderColor = NeonPink) {
+                    GlassCard(borderColor = PremiumPink) {
                         Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.padding(32.dp)) {
-                            Text("RUN OVER", color = NeonPink, fontWeight = FontWeight.Black, fontSize = 32.sp)
+                            Text("RUN OVER", color = PremiumPink, fontWeight = FontWeight.Black, fontSize = 32.sp)
                             Text("FINAL SCORE: $score", color = Color.White, fontSize = 24.sp, modifier = Modifier.padding(vertical = 16.dp))
                             Button(
                                 onClick = onBack,
-                                colors = ButtonDefaults.buttonColors(containerColor = NeonBlue),
+                                colors = ButtonDefaults.buttonColors(containerColor = PremiumBlue),
                                 shape = RoundedCornerShape(16.dp)
                             ) {
                                 Text("EXIT VOID", color = Color.Black, fontWeight = FontWeight.Bold)
@@ -220,3 +220,4 @@ fun VoidRunnerGame(
 private data class VoidObstacle(val x: Float, val y: Float)
 private data class VoidShard(val x: Float, val y: Float)
 private enum class VoidGameState { START, PLAYING, ENDED }
+

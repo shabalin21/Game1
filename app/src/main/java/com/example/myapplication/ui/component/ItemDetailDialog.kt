@@ -153,7 +153,7 @@ fun ItemDetailDialog(
                             Text(
                                 text = if (item.isConsumable) "x$quantity" else if (isOwned) "OWNED" else "UNLOCKED",
                                 style = MaterialTheme.typography.titleMedium,
-                                color = if (isOwned) NeonBlue else Color.White,
+                                color = if (isOwned) PremiumBlue else Color.White,
                                 fontWeight = FontWeight.Black
                             )
                         }
@@ -161,7 +161,7 @@ fun ItemDetailDialog(
                         CyberButton(
                             text = if (actionText == "PURCHASE") "BUY 💰${item.price}" else actionText,
                             onClick = onAction,
-                            color = if (actionText == "PURCHASE") (if (canAfford) NeonOrange else Color.Red) else NeonCyan,
+                            color = if (actionText == "PURCHASE") (if (canAfford) PremiumOrange else Color.Red) else PremiumCyan,
                             enabled = if (actionText == "PURCHASE") {
                                 canAfford && !isOwned
                             } else if (actionText == "OWNED") {
@@ -195,12 +195,12 @@ fun StatEffectGrid(effect: StatEffect, sideEffect: StatEffect?) {
         )
         
         val effects = listOf(
-            Triple("HUNGER", effect.hungerChange, NeonGreen),
-            Triple("ENERGY", effect.energyChange, NeonBlue),
-            Triple("HAPPINESS", effect.happinessChange, NeonOrange),
+            Triple("HUNGER", effect.hungerChange, PremiumGreen),
+            Triple("ENERGY", effect.energyChange, PremiumBlue),
+            Triple("HAPPINESS", effect.happinessChange, PremiumOrange),
             Triple("HEALTH", effect.healthChange, Color.Red),
-            Triple("STRESS", effect.stressChange, NeonPink),
-            Triple("INTELLIGENCE", effect.intelligenceChange, NeonPurple)
+            Triple("STRESS", effect.stressChange, PremiumPink),
+            Triple("INTELLIGENCE", effect.intelligenceChange, PremiumPurple)
         ).filter { it.second != 0f }
 
         if (effects.isEmpty()) {
@@ -230,14 +230,14 @@ fun StatEffectGrid(effect: StatEffect, sideEffect: StatEffect?) {
             Text(
                 text = "SIDE EFFECTS (UPON EXPIRY)",
                 style = MaterialTheme.typography.labelSmall,
-                color = NeonPink.copy(alpha = 0.7f),
+                color = PremiumPink.copy(alpha = 0.7f),
                 fontWeight = FontWeight.Black,
                 modifier = Modifier.padding(bottom = 8.dp)
             )
             
             val sides = listOf(
-                Triple("ENERGY", sideEffect.energyChange, NeonBlue),
-                Triple("STRESS", sideEffect.stressChange, NeonPink)
+                Triple("ENERGY", sideEffect.energyChange, PremiumBlue),
+                Triple("STRESS", sideEffect.stressChange, PremiumPink)
             ).filter { it.second != 0f }
             
             sides.forEach { (label, value, color) ->
@@ -260,10 +260,11 @@ fun StatEffectGrid(effect: StatEffect, sideEffect: StatEffect?) {
 
 private fun getRarityColor(rarity: ItemRarity): Color = when (rarity) {
     ItemRarity.COMMON -> Color(0xFF9E9E9E)
-    ItemRarity.UNCOMMON -> CyberGreen
-    ItemRarity.RARE -> CyberBlue
-    ItemRarity.EPIC -> CyberPurple
-    ItemRarity.LEGENDARY -> CyberYellow
-    ItemRarity.MYTHIC -> NeonPink
+    ItemRarity.UNCOMMON -> PremiumGreen
+    ItemRarity.RARE -> PremiumBlue
+    ItemRarity.EPIC -> PremiumPurple
+    ItemRarity.LEGENDARY -> PremiumGold
+    ItemRarity.MYTHIC -> PremiumPink
     ItemRarity.GOLD -> Color(0xFFFFD700)
 }
+

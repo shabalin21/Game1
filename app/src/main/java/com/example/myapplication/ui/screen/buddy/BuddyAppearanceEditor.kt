@@ -97,8 +97,8 @@ fun HairstyleCard(name: String, isSelected: Boolean, onClick: () -> Unit) {
         modifier = Modifier
             .size(80.dp, 40.dp)
             .clip(RoundedCornerShape(8.dp))
-            .background(if (isSelected) CyberPink.copy(alpha = 0.2f) else SurfaceDark)
-            .border(1.dp, if (isSelected) CyberPink else Color.White.copy(alpha = 0.1f), RoundedCornerShape(8.dp))
+            .background(if (isSelected) PremiumPink.copy(alpha = 0.2f) else SurfaceDark)
+            .border(1.dp, if (isSelected) PremiumPink else Color.White.copy(alpha = 0.1f), RoundedCornerShape(8.dp))
             .clickable { onClick() },
         contentAlignment = Alignment.Center
     ) {
@@ -117,3 +117,4 @@ fun ColorCircle(color: Color, isSelected: Boolean, onClick: () -> Unit) {
             .clickable { onClick() }
     )
 }
+

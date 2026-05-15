@@ -75,7 +75,7 @@ fun PetSprite(
             isSleeping -> Color(0xFF3F51B5)
             emotion.primaryMood == Mood.HAPPY -> baseBodyColor.copy(alpha = 0.8f) // Slight tint for mood
             emotion.primaryMood == Mood.EXCITED -> baseBodyColor.copy(alpha = 0.9f)
-            emotion.primaryMood == Mood.ANGRY -> NeonOrange
+            emotion.primaryMood == Mood.ANGRY -> PremiumOrange
             emotion.primaryMood == Mood.SAD -> Color(0xFF546E7A)
             else -> baseBodyColor
         },
@@ -236,7 +236,7 @@ private fun Eye(
     mood: Mood,
     appearance: com.example.myapplication.domain.model.BuddyAppearance = com.example.myapplication.domain.model.BuddyAppearance()
 ) {
-    val eyeColor = if (mood == Mood.ANGRY) NeonPink else try { 
+    val eyeColor = if (mood == Mood.ANGRY) PremiumPink else try { 
         Color(android.graphics.Color.parseColor(appearance.eyeColor)) 
     } catch (e: Exception) { Color.White }
 
@@ -287,3 +287,4 @@ fun PetSpritePreview() {
         modifier = Modifier.size(200.dp)
     )
 }
+

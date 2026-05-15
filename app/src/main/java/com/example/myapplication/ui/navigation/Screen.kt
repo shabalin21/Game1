@@ -17,9 +17,6 @@ sealed interface Screen {
     data object Property : Screen
 
     @Serializable
-    data object Social : Screen
-
-    @Serializable
     data object Profile : Screen
 
     @Serializable
@@ -53,9 +50,6 @@ sealed interface Screen {
     @Serializable
     data object Upgrades : Screen
 
-    // Social Sub-pages
-    @Serializable
-    data object SocialFeed : Screen
     @Serializable
     data object Missions : Screen
 
@@ -87,4 +81,7 @@ sealed interface Screen {
 
     @Serializable
     data object Store : Screen
+
+    @Serializable
+    data object Social : Screen
 }

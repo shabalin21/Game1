@@ -1,15 +1,41 @@
+# Built artifacts
+**/build
+*.apk
+*.aar
+*.ap_
+*.aab
+
+# Android Studio / IntelliJ IDEA
+.idea/
 *.iml
-.gradle
-/local.properties
-/.idea/caches
-/.idea/libraries
-/.idea/modules.xml
-/.idea/workspace.xml
-/.idea/navEditor.xml
-/.idea/assetWizardSettings.xml
-.DS_Store
-/build
-/captures
+*.iws
+*.ipr
+/out/
+.idea/caches/
+.idea/libraries/
+.idea/modules.xml
+.idea/workspace.xml
+.idea/navEditor.xml
+.idea/assetWizardSettings.xml
+captures/
+
+# Gradle
+.gradle/
+build/
+local.properties
 .externalNativeBuild
 .cxx
-local.properties
+
+# Kotlin
+.kotlin/
+
+# OS generated
+.DS_Store
+Thumbs.db
+
+# AI / Assistant artifacts
+.artifacts/
+**/.artifacts/
+
+# Secrets
+/secrets.xml

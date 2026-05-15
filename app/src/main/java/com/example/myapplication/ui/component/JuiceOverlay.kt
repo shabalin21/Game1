@@ -27,9 +27,11 @@ fun JuiceOverlay(
     modifier: Modifier = Modifier
 ) {
     val particleEngine = viewModel.juiceManager.particleEngine
-    val particles = particleEngine.activeParticles
     val targetFps by viewModel.targetFps.collectAsState()
     val weather by viewModel.weather.collectAsState()
+    
+    // We use a state that updates on every frame to trigger the Canvas redraw.
+    // However, we only update the particle logic inside withFrameNanos to stay in sync with the display.
     var frameTrigger by remember { mutableLongStateOf(0L) }
 
     // Update Loop
@@ -49,9 +51,10 @@ fun JuiceOverlay(
                 val deltaTime = (currentTimeNanos - lastTimeNanos) / 1_000_000_000f
                 lastTimeNanos = currentTimeNanos
                 
+                // Authoritative particle update
                 particleEngine.update(deltaTime)
                 
-                // Ambient Spawning
+                // Ambient Spawning logic (kept simple for performance)
                 spawnAccumulator += deltaTime
                 if (spawnAccumulator > 0.1f) {
                     spawnAccumulator = 0f
@@ -96,10 +99,14 @@ fun JuiceOverlay(
     }
 
     Canvas(modifier = modifier.fillMaxSize()) {
-        // Redraw on every frame trigger
+        // Access frameTrigger to ensure the Canvas is redrawn on every frame.
+        // We use the non-state particles list from the engine for maximum performance.
         val _trigger = frameTrigger
 
-        particles.forEach { particle ->
+        // Draw particles using a manual loop to avoid iterator allocation in the draw phase
+        val activeParticles = particleEngine.particles
+        for (i in 0 until activeParticles.size) {
+            val particle = activeParticles[i]
             val center = Offset(particle.x * size.width, particle.y * size.height)
             val alpha = particle.alpha
             val color = particle.color.copy(alpha = alpha)
@@ -111,19 +118,6 @@ fun JuiceOverlay(
             }.dp.toPx()
             
             when (particle.type) {
-                ParticleType.HEART -> {
-                    // Draw a simple heart shape or circle for now
-                    drawCircle(color = color, radius = radius, center = center)
-                }
-                ParticleType.SPARKLE -> {
-                    drawCircle(color = color, radius = radius, center = center)
-                }
-                ParticleType.ZZZ -> {
-                    drawCircle(color = color, radius = radius, center = center)
-                }
-                ParticleType.SMOKE -> {
-                    drawCircle(color = color.copy(alpha = alpha * 0.3f), radius = radius, center = center)
-                }
                 ParticleType.RAIN -> {
                     drawLine(
                         color = color,
@@ -131,9 +125,6 @@ fun JuiceOverlay(
                         end = center + Offset(2f, 10f),
                         strokeWidth = 1.dp.toPx()
                     )
-                }
-                ParticleType.DUST -> {
-                    drawCircle(color = color, radius = radius, center = center)
                 }
                 else -> {
                     drawCircle(color = color, radius = radius, center = center)

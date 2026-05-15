@@ -25,6 +25,9 @@ sealed class GameplayEvent {
     data class CasinoGamePlayed(val gameId: String, val bet: Int) : GameplayEvent()
     data class CasinoWin(val gameId: String, val payout: Int, val isJackpot: Boolean = false) : GameplayEvent()
     data class CasinoLoss(val gameId: String, val bet: Int) : GameplayEvent()
+
+    // Simulation Events
+    data class SimulationTick(val timestamp: Long) : GameplayEvent()
 }
 
 enum class InteractionType {

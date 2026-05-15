@@ -12,7 +12,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.myapplication.ui.theme.NeonBlue
+import com.example.myapplication.ui.theme.PremiumBlue
 import com.example.myapplication.util.PerformanceMonitor
 
 @Composable
@@ -55,7 +55,7 @@ fun PerformanceOverlay(
             if (manager.showMemoryUsage) {
                 Text(
                     text = "${memory}MB MEM",
-                    color = NeonBlue,
+                    color = PremiumBlue,
                     fontSize = 8.sp,
                     fontWeight = FontWeight.Bold
                 )
@@ -63,3 +63,4 @@ fun PerformanceOverlay(
         }
     }
 }
+

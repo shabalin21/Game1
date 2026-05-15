@@ -37,7 +37,7 @@ fun AssetsScreen(
     Box(
         modifier = Modifier.fillMaxSize()
     ) {
-        CyberBackground(accentColor = CyberYellow)
+        CyberBackground(accentColor = PremiumGold)
 
         Column(
             modifier = Modifier
@@ -50,7 +50,7 @@ fun AssetsScreen(
             ScreenHeader(
                 title = "STOCK MARKET",
                 subtitle = "PORTFOLIO: ${portfolioValue.toInt()} CR",
-                accentColor = CyberYellow,
+                accentColor = PremiumGold,
                 onBack = onBack,
                 trailingContent = {
                     CoinDisplay(coins = coins)
@@ -96,21 +96,21 @@ fun AssetsScreen(
 
 @Composable
 fun MarketStatisticsSection(stats: LifetimeStats, portfolioValue: Float) {
-    CyberCard(accentColor = CyberBlue.copy(alpha = 0.5f)) {
+    CyberCard(accentColor = PremiumBlue.copy(alpha = 0.5f)) {
         Column(modifier = Modifier.padding(4.dp)) {
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                StatItem("TOTAL INVESTED", "${stats.totalInvested}", CyberBlue)
-                StatItem("TOTAL PROFIT", "${stats.totalMarketProfit}", CyberGreen)
+                StatItem("TOTAL INVESTED", "${stats.totalInvested}", PremiumBlue)
+                StatItem("TOTAL PROFIT", "${stats.totalMarketProfit}", PremiumGreen)
             }
             Spacer(modifier = Modifier.height(8.dp))
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                StatItem("TOTAL LOSSES", "${stats.totalMarketLosses}", CyberRed)
-                StatItem("TOTAL TRADES", "${stats.totalTrades}", CyberYellow)
+                StatItem("TOTAL LOSSES", "${stats.totalMarketLosses}", PremiumRed)
+                StatItem("TOTAL TRADES", "${stats.totalTrades}", PremiumGold)
             }
             Spacer(modifier = Modifier.height(8.dp))
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                StatItem("BEST TRADE", "${stats.bestTrade}", CyberGreen)
-                StatItem("WORST TRADE", "${stats.worstTrade}", CyberRed)
+                StatItem("BEST TRADE", "${stats.bestTrade}", PremiumGreen)
+                StatItem("WORST TRADE", "${stats.worstTrade}", PremiumRed)
             }
         }
     }
@@ -133,17 +133,17 @@ fun AssetCard(
     onSell: () -> Unit
 ) {
     val accentColor = when (asset.type) {
-        AssetType.CRYPTO -> CyberYellow
-        AssetType.STOCK -> CyberBlue
-        AssetType.SECURITIES -> CyberGreen
+        AssetType.CRYPTO -> PremiumGold
+        AssetType.STOCK -> PremiumBlue
+        AssetType.SECURITIES -> PremiumGreen
         AssetType.GOLD -> Color(0xFFFFD700)
         AssetType.SILVER -> Color(0xFFC0C0C0)
-        AssetType.CASH -> NeonCyan
+        AssetType.CASH -> PremiumCyan
     }
 
     val currentValue = owned * asset.currentPrice
     val profit = currentValue - costBasis
-    val profitColor = if (profit >= 0) CyberGreen else CyberRed
+    val profitColor = if (profit >= 0) PremiumGreen else PremiumRed
 
     CyberCard(accentColor = accentColor) {
         Column(modifier = Modifier.padding(4.dp)) {
@@ -169,7 +169,7 @@ fun AssetCard(
                     Text(
                         text = "${asset.currentPrice.toInt()} CR",
                         style = MaterialTheme.typography.titleMedium,
-                        color = CyberYellow,
+                        color = PremiumGold,
                         fontWeight = FontWeight.Black
                     )
                     val trend = if (asset.history.size > 1) {
@@ -179,7 +179,7 @@ fun AssetCard(
                     } else ""
                     Text(
                         text = trend,
-                        color = if (trend == "▲") CyberGreen else CyberRed,
+                        color = if (trend == "▲") PremiumGreen else PremiumRed,
                         fontSize = 12.sp
                     )
                 }
@@ -226,14 +226,14 @@ fun AssetCard(
                 CyberButton(
                     text = "BUY",
                     onClick = onBuy,
-                    color = CyberGreen,
+                    color = PremiumGreen,
                     modifier = Modifier.weight(1f)
                 )
                 if (owned > 0) {
                     CyberButton(
                         text = "SELL",
                         onClick = onSell,
-                        color = CyberRed,
+                        color = PremiumRed,
                         modifier = Modifier.weight(1f)
                     )
                 }
@@ -241,3 +241,5 @@ fun AssetCard(
         }
     }
 }
+
+

@@ -30,7 +30,7 @@ fun SpecialShopsScreen(
     val blackMarketItems by viewModel.blackMarketSelection.collectAsState()
 
     Box(modifier = Modifier.fillMaxSize()) {
-        CyberBackground(accentColor = CyberYellow)
+        CyberBackground(accentColor = PremiumGold)
 
         Column(
             modifier = Modifier
@@ -43,7 +43,7 @@ fun SpecialShopsScreen(
             ScreenHeader(
                 title = "PREMIUM_TRADE",
                 subtitle = "EXCLUSIVE_MARKETS",
-                accentColor = CyberYellow,
+                accentColor = PremiumGold,
                 trailingContent = { 
                     IconButton(onClick = onBack) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back", tint = Color.White)
@@ -57,7 +57,7 @@ fun SpecialShopsScreen(
                 contentPadding = PaddingValues(bottom = 32.dp)
             ) {
                 if (luxuryItems.isNotEmpty()) {
-                    item { ShopSectionTitle("LUXURY SELECTION", CyberYellow) }
+                    item { ShopSectionTitle("LUXURY SELECTION", PremiumGold) }
                     items(luxuryItems.mapNotNull { ItemRegistry.getItem(it) }, key = { it.id }) { itemModel ->
                         ShopItemCard(
                             item = itemModel,
@@ -70,7 +70,7 @@ fun SpecialShopsScreen(
                 }
 
                 if (blackMarketItems.isNotEmpty()) {
-                    item { ShopSectionTitle("BLACK MARKET", NeonPink) }
+                    item { ShopSectionTitle("BLACK MARKET", PremiumPink) }
                     items(blackMarketItems.mapNotNull { ItemRegistry.getItem(it) }, key = { it.id }) { itemModel ->
                         ShopItemCard(
                             item = itemModel,
@@ -97,3 +97,4 @@ fun ShopSectionTitle(title: String, color: Color) {
         modifier = Modifier.padding(bottom = 8.dp)
     )
 }
+

@@ -27,7 +27,7 @@ fun PropertyHubScreen(
     onNavigateToUpgrades: () -> Unit
 ) {
     Box(modifier = Modifier.fillMaxSize()) {
-        CyberBackground(accentColor = CyberBlue)
+        CyberBackground(accentColor = PremiumBlue)
 
         Column(
             modifier = Modifier
@@ -41,7 +41,7 @@ fun PropertyHubScreen(
             ScreenHeader(
                 title = "PROPERTY_MANAGEMENT",
                 subtitle = "LIFESTYLE_ASSETS",
-                accentColor = CyberBlue
+                accentColor = PremiumBlue
             )
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -51,7 +51,7 @@ fun PropertyHubScreen(
                 title = "OWNERSHIP_GALLERY",
                 subtitle = "Homes, Vehicles & Pets",
                 icon = Icons.Default.Home,
-                color = CyberPurple,
+                color = PremiumPurple,
                 onClick = onNavigateToOwnership
             )
 
@@ -62,7 +62,7 @@ fun PropertyHubScreen(
                 title = "UPGRADES_TERMINAL",
                 subtitle = "Permanent Boosts & Efficiency",
                 icon = Icons.Default.Settings,
-                color = CyberBlue,
+                color = PremiumBlue,
                 onClick = onNavigateToUpgrades
             )
 
@@ -70,3 +70,4 @@ fun PropertyHubScreen(
         }
     }
 }
+

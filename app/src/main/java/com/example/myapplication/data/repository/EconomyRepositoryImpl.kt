@@ -1,8 +1,8 @@
 package com.example.myapplication.data.repository
 
+import com.example.myapplication.core.EventBus
 import com.example.myapplication.data.local.*
 import com.example.myapplication.domain.event.GameplayEvent
-import com.example.myapplication.domain.event.GameplayEventManager
 import com.example.myapplication.domain.event.TransactionType
 import com.example.myapplication.domain.model.ItemRarity
 import com.example.myapplication.domain.repository.EconomyRepository
@@ -18,7 +18,7 @@ import javax.inject.Singleton
 @Singleton
 class EconomyRepositoryImpl @Inject constructor(
     private val petDao: PetDao,
-    private val eventManager: GameplayEventManager,
+    private val eventBus: EventBus,
     private val cheatManager: com.example.myapplication.domain.admin.CheatManager,
     private val json: Json
 ) : EconomyRepository {
@@ -32,14 +32,14 @@ class EconomyRepositoryImpl @Inject constructor(
     override suspend fun addCoins(amount: Int) {
         val current = petDao.getEconomy().first() ?: EconomyEntity()
         petDao.updateEconomy(current.copy(coins = current.coins + amount))
-        eventManager.dispatch(GameplayEvent.EconomyTransaction(amount, TransactionType.EARNED, "generic"))
+        eventBus.publish(GameplayEvent.EconomyTransaction(amount, TransactionType.EARNED, "generic"))
     }
 
     override suspend fun spendCoins(amount: Int): Boolean {
         val current = petDao.getEconomy().first() ?: EconomyEntity()
         return if (current.coins >= amount) {
             petDao.updateEconomy(current.copy(coins = current.coins - amount))
-            eventManager.dispatch(GameplayEvent.EconomyTransaction(amount, TransactionType.SPENT, "generic"))
+            eventBus.publish(GameplayEvent.EconomyTransaction(amount, TransactionType.SPENT, "generic"))
             true
         } else {
             false
@@ -87,7 +87,7 @@ class EconomyRepositoryImpl @Inject constructor(
         return try {
             Timber.i("Store: Attempting purchase of $quantity x $itemId ($rarity) for $price CR")
             petDao.purchaseConsumable("default_user", price, itemId, quantity, rarity.name, floatValue)
-            eventManager.dispatch(GameplayEvent.EconomyTransaction(price, TransactionType.SPENT, "store_purchase"))
+            eventBus.publish(GameplayEvent.EconomyTransaction(price, TransactionType.SPENT, "store_purchase"))
             Timber.i("Store: Successfully purchased $itemId")
             Result.success(Unit)
         } catch (e: Exception) {
@@ -107,7 +107,7 @@ class EconomyRepositoryImpl @Inject constructor(
             val updatedPet = transform(currentPet)
             
             petDao.purchasePermanent("default_user", price, updatedPet.toEntity(json))
-            eventManager.dispatch(GameplayEvent.EconomyTransaction(price, TransactionType.SPENT, "store_purchase_permanent"))
+            eventBus.publish(GameplayEvent.EconomyTransaction(price, TransactionType.SPENT, "store_purchase_permanent"))
             Timber.i("Store: Successfully purchased permanent item $itemId")
             Result.success(Unit)
         } catch (e: Exception) {

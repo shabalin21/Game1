@@ -1,7 +1,7 @@
 package com.example.myapplication.domain.usecase
 
+import com.example.myapplication.core.EventBus
 import com.example.myapplication.domain.event.GameplayEvent
-import com.example.myapplication.domain.event.GameplayEventManager
 import com.example.myapplication.domain.event.InteractionType
 import com.example.myapplication.domain.model.Mood
 import com.example.myapplication.domain.repository.PetRepository
@@ -17,7 +17,7 @@ class FeedPetUseCase @Inject constructor(
     private val petRepository: PetRepository,
     private val simulationManager: SimulationManager,
     private val moodEngine: MoodEngine,
-    private val eventManager: GameplayEventManager
+    private val eventBus: EventBus
 ) {
     suspend operator fun invoke(itemId: String): Boolean {
         val pet = petRepository.getPetState().first() ?: return false
@@ -30,7 +30,7 @@ class FeedPetUseCase @Inject constructor(
                 "FEED"
             )
             simulationManager.updatePetState { it.copy(emotionState = newEmotion) }
-            eventManager.dispatchNonBlocking(GameplayEvent.FoodConsumed(itemId, 10f))
+            eventBus.publishNonBlocking(GameplayEvent.FoodConsumed(itemId, 10f))
             return true
         }
         return false
@@ -42,7 +42,7 @@ class PetThePetUseCase @Inject constructor(
     private val petRepository: PetRepository,
     private val simulationManager: SimulationManager,
     private val moodEngine: MoodEngine,
-    private val eventManager: GameplayEventManager
+    private val eventBus: EventBus
 ) {
     suspend operator fun invoke(): Boolean {
         val pet = petRepository.getPetState().first() ?: return false
@@ -109,7 +109,7 @@ class PetThePetUseCase @Inject constructor(
             )
         }
 
-        eventManager.dispatchNonBlocking(GameplayEvent.PetInteracted(InteractionType.PET))
+        eventBus.publishNonBlocking(GameplayEvent.PetInteracted(InteractionType.PET))
         return true
     }
 }
@@ -126,10 +126,10 @@ class ToggleSleepUseCase @Inject constructor(
 @Singleton
 class PlayWithPetUseCase @Inject constructor(
     private val simulationManager: SimulationManager,
-    private val eventManager: GameplayEventManager
+    private val eventBus: EventBus
 ) {
     suspend operator fun invoke() {
         simulationManager.processManualPetting()
-        eventManager.dispatchNonBlocking(GameplayEvent.PetInteracted(InteractionType.PLAY))
+        eventBus.publishNonBlocking(GameplayEvent.PetInteracted(InteractionType.PLAY))
     }
 }

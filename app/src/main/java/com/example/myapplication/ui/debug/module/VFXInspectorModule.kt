@@ -10,13 +10,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.myapplication.ui.fx.ParticleEngine
 import com.example.myapplication.ui.fx.ParticleType
-import com.example.myapplication.ui.theme.NeonPurple
+import com.example.myapplication.ui.theme.PremiumPurple
 
 @Composable
 fun VFXInspectorModule(
     particleEngine: ParticleEngine
 ) {
-    val activeCount = particleEngine.activeParticles.size
+    val activeCount = particleEngine.particles.size
     val maxCount = particleEngine.maxParticles
 
     Column(
@@ -47,11 +47,11 @@ fun VFXInspectorModule(
         }
 
         LinearProgressIndicator(
-            progress = activeCount.toFloat() / maxCount,
+            progress = { activeCount.toFloat() / maxCount },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(vertical = 8.dp),
-            color = NeonPurple,
+            color = PremiumPurple,
             trackColor = Color.White.copy(alpha = 0.1f)
         )
 
@@ -100,3 +100,4 @@ fun VFXInspectorModule(
         }
     }
 }
+

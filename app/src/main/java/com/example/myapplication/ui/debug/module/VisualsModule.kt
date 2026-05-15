@@ -8,7 +8,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.example.myapplication.ui.debug.DevLabManager
-import com.example.myapplication.ui.theme.NeonPurple
+import com.example.myapplication.ui.theme.PremiumPurple
 
 @Composable
 fun VisualsModule(manager: DevLabManager) {
@@ -37,9 +37,10 @@ private fun VisualToggle(label: String, checked: Boolean, onCheckedChange: (Bool
             checked = checked,
             onCheckedChange = onCheckedChange,
             colors = SwitchDefaults.colors(
-                checkedThumbColor = NeonPurple,
-                checkedTrackColor = NeonPurple.copy(alpha = 0.5f)
+                checkedThumbColor = PremiumPurple,
+                checkedTrackColor = PremiumPurple.copy(alpha = 0.5f)
             )
         )
     }
 }
+

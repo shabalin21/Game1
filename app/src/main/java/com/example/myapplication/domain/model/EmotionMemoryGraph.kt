@@ -43,7 +43,7 @@ enum class AssociationType {
  * Helper to calculate current emotional weight of a memory based on decay.
  */
 fun MemoryNode.getCurrentWeight(currentTime: Long): Float {
-    val ageHours = (currentTime - timestamp).toFloat() / (1000f * 60f * 60f)
-    val decayRate = 0.05f // 5% per hour
-    return (baseIntensity * Math.exp(-decayRate * ageHours).toFloat()).coerceIn(0f, 1f)
+    val ageHours = (currentTime - timestamp).toDouble() / (1000.0 * 60.0 * 60.0)
+    val decayRate = 0.05 // 5% per hour
+    return (baseIntensity * Math.exp(-decayRate * ageHours)).toFloat().coerceIn(0f, 1f)
 }

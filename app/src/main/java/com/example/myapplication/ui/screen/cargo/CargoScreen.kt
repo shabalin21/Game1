@@ -52,7 +52,7 @@ fun CargoScreen(
     Box(
         modifier = Modifier.fillMaxSize()
     ) {
-        CyberBackground(accentColor = CyberBlue)
+        CyberBackground(accentColor = PremiumBlue)
 
         Column(
             modifier = Modifier
@@ -65,7 +65,7 @@ fun CargoScreen(
             ScreenHeader(
                 title = if (selectedTab == CargoTab.INVENTORY) "Inventory" else "Store",
                 subtitle = if (selectedTab == CargoTab.INVENTORY) "Storage Unit" else "Trade Network",
-                accentColor = CyberBlue,
+                accentColor = PremiumBlue,
                 onBack = onBack,
                 trailingContent = {
                     CoinDisplay(coins = coins)
@@ -218,7 +218,7 @@ fun MarketGrid(
                 Text(
                     text = "FEATURED DEALS",
                     style = MaterialTheme.typography.labelSmall,
-                    color = CyberYellow,
+                    color = PremiumGold,
                     fontWeight = FontWeight.Black,
                     modifier = Modifier.padding(vertical = 8.dp)
                 )
@@ -231,7 +231,7 @@ fun MarketGrid(
                     canAfford = coins >= item.price,
                     isOwned = isOwned,
                     onClick = { onItemClick(item) },
-                    modifier = Modifier.shadow(16.dp, ambientColor = CyberYellow, spotColor = CyberYellow)
+                    modifier = Modifier.shadow(16.dp, ambientColor = PremiumGold, spotColor = PremiumGold)
                 )
             }
             
@@ -325,7 +325,7 @@ fun MarketItemCard(
         modifier = modifier
             .fillMaxWidth()
             .clickable { onClick() },
-        accentColor = if (isOwned) CyberBlue else rarityColor,
+        accentColor = if (isOwned) PremiumBlue else rarityColor,
         showGlow = item.rarity >= ItemRarity.RARE || isOwned
     ) {
         Column(
@@ -360,12 +360,12 @@ fun MarketItemCard(
             Spacer(modifier = Modifier.height(8.dp))
             
             if (isOwned) {
-                CyberBadge(text = "OWNED", accentColor = CyberBlue)
+                CyberBadge(text = "OWNED", accentColor = PremiumBlue)
             } else {
                 Text(
                     text = "💰 ${item.price}",
                     style = MaterialTheme.typography.labelSmall,
-                    color = if (canAfford) CyberYellow else CyberRed,
+                    color = if (canAfford) PremiumGold else PremiumRed,
                     fontWeight = FontWeight.Black
                 )
             }
@@ -382,7 +382,7 @@ fun TabButton(
     modifier: Modifier = Modifier
 ) {
     val backgroundColor by animateColorAsState(if (isSelected) SurfaceCard else Color.Transparent, label = "TabBackground")
-    val contentColor by animateColorAsState(if (isSelected) NeonCyan else Color.White.copy(alpha = 0.4f), label = "TabContent")
+    val contentColor by animateColorAsState(if (isSelected) PremiumCyan else Color.White.copy(alpha = 0.4f), label = "TabContent")
 
     Box(
         modifier = modifier
@@ -501,27 +501,29 @@ fun EmptyInventoryState(onGoToMarket: () -> Unit) {
         CyberButton(
             text = "ACCESS STORE",
             onClick = onGoToMarket,
-            color = NeonCyan
+            color = PremiumCyan
         )
     }
 }
 
 private fun getCategoryColor(category: ItemCategory): Color = when (category) {
-    ItemCategory.PRODUCTS -> NeonGreen
-    ItemCategory.CLOTHES -> NeonPink
+    ItemCategory.PRODUCTS -> PremiumGreen
+    ItemCategory.CLOTHES -> PremiumPink
     ItemCategory.ITEMS -> Color.Cyan
-    ItemCategory.HOMES -> NeonPurple
+    ItemCategory.HOMES -> PremiumPurple
     else -> Color.Gray
 }
 
 private fun getRarityColor(rarity: ItemRarity): Color = when (rarity) {
     ItemRarity.COMMON -> Color(0xFF9E9E9E)
-    ItemRarity.UNCOMMON -> CyberGreen
-    ItemRarity.RARE -> CyberBlue
-    ItemRarity.EPIC -> CyberPurple
-    ItemRarity.LEGENDARY -> CyberYellow
-    ItemRarity.MYTHIC -> NeonPink
+    ItemRarity.UNCOMMON -> PremiumGreen
+    ItemRarity.RARE -> PremiumBlue
+    ItemRarity.EPIC -> PremiumPurple
+    ItemRarity.LEGENDARY -> PremiumGold
+    ItemRarity.MYTHIC -> PremiumPink
     ItemRarity.GOLD -> Color(0xFFFFD700)
 }
 
 enum class CargoTab { INVENTORY, MARKET }
+
+

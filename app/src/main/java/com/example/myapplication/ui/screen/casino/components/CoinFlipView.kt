@@ -44,13 +44,13 @@ fun CoinFlipView(
         }
     }
 
-    CasinoGameCard(accentColor = NeonPink) {
+    CasinoGameCard(accentColor = PremiumPink) {
         Column(
             modifier = Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            GameSectionHeader("Double or Nothing", color = NeonPink)
+            GameSectionHeader("Double or Nothing", color = PremiumPink)
             
             Spacer(modifier = Modifier.height(24.dp))
 
@@ -101,7 +101,7 @@ fun CoinFlipView(
                 },
                 actionText = if (isFlipping) "FLIPPING..." else "EXECUTE FLIP",
                 enabled = !isFlipping && coins >= selectedWager,
-                accentColor = NeonPink,
+                accentColor = PremiumPink,
                 maxCoins = coins
             )
 
@@ -157,8 +157,8 @@ fun CyberCoin(
             .shadow(
                 elevation = if (isFlipping) 32.dp else 12.dp,
                 shape = CircleShape,
-                ambientColor = NeonPink,
-                spotColor = NeonPink
+                ambientColor = PremiumPink,
+                spotColor = PremiumPink
             )
             .clip(CircleShape)
             .background(
@@ -166,13 +166,13 @@ fun CyberCoin(
                     colors = listOf(SurfaceDark, Color.Black)
                 )
             )
-            .border(2.dp, NeonPink.copy(alpha = 0.5f), CircleShape),
+            .border(2.dp, PremiumPink.copy(alpha = 0.5f), CircleShape),
         contentAlignment = Alignment.Center
     ) {
         Text(
             text = if (side == CoinSide.HEADS) "HEADS" else "TAILS",
             style = MaterialTheme.typography.headlineSmall,
-            color = if (isFlipping) NeonPink.copy(alpha = 0.2f) else Color.White,
+            color = if (isFlipping) PremiumPink.copy(alpha = 0.2f) else Color.White,
             fontWeight = FontWeight.Black,
             letterSpacing = 2.sp
         )
@@ -181,7 +181,7 @@ fun CyberCoin(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(12.dp)
-                .border(1.dp, NeonPink.copy(alpha = 0.1f), CircleShape)
+                .border(1.dp, PremiumPink.copy(alpha = 0.1f), CircleShape)
         )
     }
 }
@@ -195,7 +195,7 @@ fun SideButton(
     enabled: Boolean = true
 ) {
     val backgroundColor by animateColorAsState(
-        if (isSelected) NeonPink.copy(alpha = 0.2f) else SurfaceDark,
+        if (isSelected) PremiumPink.copy(alpha = 0.2f) else SurfaceDark,
         label = "SideBg"
     )
     
@@ -206,7 +206,7 @@ fun SideButton(
             .background(backgroundColor)
             .border(
                 1.dp, 
-                if (isSelected) NeonPink else Color.White.copy(alpha = 0.05f), 
+                if (isSelected) PremiumPink else Color.White.copy(alpha = 0.05f), 
                 RoundedCornerShape(6.dp)
             )
             .clickable(enabled = enabled) { onClick() },
@@ -226,7 +226,7 @@ fun CoinFlipResultBanner(isWin: Boolean, payout: Int) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         Text(
             text = if (isWin) "Correct!" else "Better luck next time",
-            color = if (isWin) NeonGreen else NeonRed,
+            color = if (isWin) PremiumGreen else PremiumRed,
             fontWeight = FontWeight.Black,
             fontSize = 18.sp,
             letterSpacing = 1.sp
@@ -234,10 +234,12 @@ fun CoinFlipResultBanner(isWin: Boolean, payout: Int) {
         if (isWin) {
             Text(
                 text = "+$payout CR",
-                color = NeonCyan,
+                color = PremiumCyan,
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Black
             )
         }
     }
 }
+
+

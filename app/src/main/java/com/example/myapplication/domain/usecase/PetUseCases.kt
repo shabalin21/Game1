@@ -1,5 +1,8 @@
 package com.example.myapplication.domain.usecase
 
+import com.example.myapplication.core.modifier.Modifier
+import com.example.myapplication.core.modifier.ModifierSource
+import com.example.myapplication.core.modifier.ModifierType
 import com.example.myapplication.domain.admin.CheatManager
 import com.example.myapplication.domain.model.*
 import com.example.myapplication.domain.repository.*
@@ -83,7 +86,22 @@ class ProcessSimulationTickUseCase @Inject constructor(
         val pet = petRepository.getPetState().first() ?: return
         val world = worldRepository.getWorldState().first()
         val upgrades = upgradeRepository.getUpgrades().first()
-        val multipliers = upgrades.associate { up -> up.id to (1.0f + up.currentLevel * 0.1f) }
+        
+        // Convert Upgrades to Systemic Modifiers
+        val upgradeModifiers = upgrades.filter { it.currentLevel > 0 }.map { up ->
+            val value = when(up.id) {
+                "energy_decay", "hunger_decay", "happiness_decay", "sleep_quality" -> 1.0f / (1.0f + up.currentLevel * 0.1f)
+                else -> 1.0f + up.currentLevel * 0.1f
+            }
+            Modifier(
+                id = up.id,
+                name = up.name,
+                value = value,
+                type = ModifierType.MULTIPLICATIVE,
+                source = ModifierSource.UPGRADE,
+                tag = up.id
+            )
+        }
         
         val timeDilation = cheatManager.timeDilation.value
         val effectiveTime = if (timeDilation != 1.0f) {
@@ -93,7 +111,7 @@ class ProcessSimulationTickUseCase @Inject constructor(
             currentTimeMillis
         }
 
-        val updatedPet = engine.updateState(pet, world, effectiveTime, multipliers)
+        val updatedPet = engine.updateState(pet, world, effectiveTime, upgradeModifiers)
         
         val finalStats = if (cheatManager.godModeEnabled.value) {
             updatedPet.stats.copy(hunger = 100f, energy = 100f, happiness = 100f, health = 100f, hygiene = 100f)

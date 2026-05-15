@@ -34,7 +34,7 @@ fun CasinoScaffold(
     tabs: @Composable () -> Unit,
     content: @Composable () -> Unit,
     logs: @Composable () -> Unit,
-    accentColor: Color = NeonYellow
+    accentColor: Color = PremiumGold
 ) {
     Column(
         modifier = Modifier
@@ -85,7 +85,7 @@ fun CasinoScaffold(
 @Composable
 fun CasinoGameCard(
     modifier: Modifier = Modifier,
-    accentColor: Color = NeonYellow,
+    accentColor: Color = PremiumGold,
     content: @Composable ColumnScope.() -> Unit
 ) {
     NeonCard(
@@ -108,7 +108,7 @@ fun WagerButton(
     isSelected: Boolean,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
-    accentColor: Color = NeonBlue
+    accentColor: Color = PremiumBlue
 ) {
     val backgroundColor by animateColorAsState(
         targetValue = if (isSelected) accentColor.copy(alpha = 0.2f) else SurfaceDark,
@@ -233,7 +233,7 @@ fun CasinoScaffoldPreview() {
             },
             content = {
                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    Text("GAME_CONTENT_LOADED", color = CyberYellow, fontWeight = FontWeight.Black)
+                    Text("GAME_CONTENT_LOADED", color = PremiumGold, fontWeight = FontWeight.Black)
                 }
             },
             logs = {
@@ -260,11 +260,11 @@ fun CasinoTabRow(
         CasinoGameType.entries.filter { it != CasinoGameType.ROULETTE }.forEach { type ->
             val isSelected = selected == type
             val bgColor by animateColorAsState(
-                targetValue = if (isSelected) CyberYellow.copy(alpha = 0.2f) else Color.Transparent,
+                targetValue = if (isSelected) PremiumGold.copy(alpha = 0.2f) else Color.Transparent,
                 label = "TabBg"
             )
             val textColor by animateColorAsState(
-                targetValue = if (isSelected) CyberYellow else Color.White.copy(alpha = 0.4f),
+                targetValue = if (isSelected) PremiumGold else Color.White.copy(alpha = 0.4f),
                 label = "TabText"
             )
 
@@ -291,10 +291,12 @@ fun CasinoTabRow(
                             .align(Alignment.BottomCenter)
                             .fillMaxWidth(0.5f)
                             .height(2.dp)
-                            .background(CyberYellow)
+                            .background(PremiumGold)
                     )
                 }
             }
         }
     }
 }
+
+

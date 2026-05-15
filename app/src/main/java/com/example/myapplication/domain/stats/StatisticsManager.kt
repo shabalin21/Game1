@@ -1,7 +1,7 @@
 package com.example.myapplication.domain.stats
 
+import com.example.myapplication.core.EventBus
 import com.example.myapplication.domain.event.GameplayEvent
-import com.example.myapplication.domain.event.GameplayEventManager
 import com.example.myapplication.domain.event.TransactionType
 import com.example.myapplication.domain.repository.StatisticsRepository
 import kotlinx.coroutines.CoroutineScope
@@ -14,13 +14,13 @@ import javax.inject.Singleton
 
 @Singleton
 class StatisticsManager @Inject constructor(
-    private val eventManager: GameplayEventManager,
+    private val eventBus: EventBus,
     private val statisticsRepository: StatisticsRepository
 ) {
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
     fun start() {
-        eventManager.events
+        eventBus.events
             .onEach { event ->
                 handleEvent(event)
             }

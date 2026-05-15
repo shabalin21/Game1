@@ -1,9 +1,9 @@
 package com.example.myapplication.domain.progression.mission
 
+import com.example.myapplication.core.EventBus
 import com.example.myapplication.domain.model.*
 import com.example.myapplication.domain.repository.PetRepository
 import com.example.myapplication.domain.event.GameplayEvent
-import com.example.myapplication.domain.event.GameplayEventManager
 import kotlinx.coroutines.flow.first
 import timber.log.Timber
 import javax.inject.Inject
@@ -14,7 +14,7 @@ import kotlin.random.Random
 @Singleton
 class MissionManager @Inject constructor(
     private val petRepository: PetRepository,
-    private val eventManager: GameplayEventManager
+    private val eventBus: EventBus
 ) {
     suspend fun checkAndRotateMissions() {
         val pet = petRepository.getPetState().first() ?: return

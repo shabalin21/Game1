@@ -39,7 +39,7 @@ fun CheatMenu(
     var isUnlocked by remember { mutableStateOf(false) }
 
     Box(modifier = Modifier.fillMaxSize()) {
-        CyberBackground(accentColor = CyberRed)
+        CyberBackground(accentColor = PremiumRed)
 
         if (!isUnlocked) {
             CheatLockScreen(
@@ -82,7 +82,7 @@ fun CheatLockScreen(onUnlocked: () -> Unit, onBack: () -> Unit) {
         Text(
             "SYSTEM ACCESS",
             style = MaterialTheme.typography.headlineMedium,
-            color = CyberRed,
+            color = PremiumRed,
             fontWeight = FontWeight.Black
         )
         Text(
@@ -107,10 +107,10 @@ fun CheatLockScreen(onUnlocked: () -> Unit, onBack: () -> Unit) {
                         .size(40.dp, 56.dp)
                         .border(
                             1.dp,
-                            if (isError) CyberRed else if (isCurrent) CyberRed.copy(alpha = 0.5f) else Color.White.copy(alpha = 0.1f),
+                            if (isError) PremiumRed else if (isCurrent) PremiumRed.copy(alpha = 0.5f) else Color.White.copy(alpha = 0.1f),
                             RoundedCornerShape(4.dp)
                         )
-                        .background(if (isCurrent) CyberRed.copy(alpha = 0.05f) else Color.Transparent),
+                        .background(if (isCurrent) PremiumRed.copy(alpha = 0.05f) else Color.Transparent),
                     contentAlignment = Alignment.Center
                 ) {
                     if (char != null) {
@@ -124,7 +124,7 @@ fun CheatLockScreen(onUnlocked: () -> Unit, onBack: () -> Unit) {
 
         if (isError) {
             Spacer(modifier = Modifier.height(16.dp))
-            Text("ACCESS_DENIED", color = CyberRed, style = MaterialTheme.typography.labelSmall, fontWeight = FontWeight.Black)
+            Text("ACCESS_DENIED", color = PremiumRed, style = MaterialTheme.typography.labelSmall, fontWeight = FontWeight.Black)
         }
 
         Spacer(modifier = Modifier.height(48.dp))
@@ -150,7 +150,7 @@ fun CheatLockScreen(onUnlocked: () -> Unit, onBack: () -> Unit) {
                                     else -> if (password.length < 4) password += key
                                 }
                             },
-                            color = if (key == "OK") CyberGreen else if (key == "C") CyberRed else Color.DarkGray,
+                            color = if (key == "OK") PremiumGreen else if (key == "C") PremiumRed else Color.DarkGray,
                             modifier = Modifier.size(70.dp, 50.dp)
                         )
                     }
@@ -182,7 +182,7 @@ fun AdminPanel(viewModel: CheatViewModel, onBack: () -> Unit) {
         ScreenHeader(
             title = "ADMIN PANEL",
             subtitle = "RESTRICTED SYSTEM ACCESS",
-            accentColor = CyberRed,
+            accentColor = PremiumRed,
             trailingContent = {
                 IconButton(onClick = onBack) {
                     Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back", tint = Color.White)
@@ -193,7 +193,7 @@ fun AdminPanel(viewModel: CheatViewModel, onBack: () -> Unit) {
         ScrollableTabRow(
             selectedTabIndex = tabs.indexOf(selectedTab),
             containerColor = Color.Transparent,
-            contentColor = CyberRed,
+            contentColor = PremiumRed,
             edgePadding = 0.dp,
             divider = {}
         ) {
@@ -206,7 +206,7 @@ fun AdminPanel(viewModel: CheatViewModel, onBack: () -> Unit) {
                         Text(
                             text = tab, 
                             style = MaterialTheme.typography.labelSmall,
-                            color = if (isSelected) CyberRed else Color.White.copy(alpha = 0.4f),
+                            color = if (isSelected) PremiumRed else Color.White.copy(alpha = 0.4f),
                             fontWeight = if (isSelected) FontWeight.Black else FontWeight.Bold
                         ) 
                     }
@@ -245,7 +245,7 @@ fun AdminNotesRoom(viewModel: CheatViewModel) {
     
     CheatSection("DEVELOPER_MEMO") {
         Column {
-            Text("PRIVATE NOTES - AUTOSAVED", style = MaterialTheme.typography.labelSmall, color = CyberGreen.copy(alpha = 0.6f))
+            Text("PRIVATE NOTES - AUTOSAVED", style = MaterialTheme.typography.labelSmall, color = PremiumGreen.copy(alpha = 0.6f))
             Spacer(modifier = Modifier.height(12.dp))
             
             Box(
@@ -261,15 +261,15 @@ fun AdminNotesRoom(viewModel: CheatViewModel) {
                     onValueChange = { viewModel.saveNotes(it) },
                     modifier = Modifier.fillMaxSize(),
                     textStyle = TextStyle(
-                        color = CyberGreen,
+                        color = PremiumGreen,
                         fontFamily = FontFamily.Monospace,
                         fontSize = 14.sp,
                         lineHeight = 20.sp
                     ),
-                    cursorBrush = SolidColor(CyberGreen),
+                    cursorBrush = SolidColor(PremiumGreen),
                     decorationBox = { innerTextField ->
                         if (notes.isEmpty()) {
-                            Text("Initialize recording...", color = CyberGreen.copy(alpha = 0.2f), fontFamily = FontFamily.Monospace)
+                            Text("Initialize recording...", color = PremiumGreen.copy(alpha = 0.2f), fontFamily = FontFamily.Monospace)
                         }
                         innerTextField()
                     }
@@ -290,14 +290,14 @@ fun BlinkingCursor() {
         animationSpec = infiniteRepeatable(tween(500), RepeatMode.Reverse),
         label = ""
     )
-    Box(modifier = Modifier.size(2.dp, 24.dp).background(CyberRed.copy(alpha = alpha)))
+    Box(modifier = Modifier.size(2.dp, 24.dp).background(PremiumRed.copy(alpha = alpha)))
 }
 
 @Composable
 fun SecretRoomContents(cheatManager: CheatManager) {
     CheatSection("ADVANCED_CONTROLS") {
         Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-            CyberButton(text = "FULL_SYSTEM_RESET", onClick = { cheatManager.refillAllStats() }, color = CyberRed, modifier = Modifier.fillMaxWidth())
+            CyberButton(text = "FULL_SYSTEM_RESET", onClick = { cheatManager.refillAllStats() }, color = PremiumRed, modifier = Modifier.fillMaxWidth())
             
             val godMode by cheatManager.godModeEnabled.collectAsState()
             CheatToggle("GOD_MODE (NO_DECAY)", godMode) { cheatManager.godModeEnabled.value = it }
@@ -331,10 +331,10 @@ fun StatCheatRow(label: String, onSet: (Float) -> Unit) {
             onValueChange = { value = it },
             valueRange = 0f..100f,
             modifier = Modifier.weight(1f),
-            colors = SliderDefaults.colors(thumbColor = CyberRed, activeTrackColor = CyberRed, inactiveTrackColor = Color.White.copy(alpha = 0.1f))
+            colors = SliderDefaults.colors(thumbColor = PremiumRed, activeTrackColor = PremiumRed, inactiveTrackColor = Color.White.copy(alpha = 0.1f))
         )
         TextButton(onClick = { onSet(value) }) {
-            Text("SET", style = MaterialTheme.typography.labelSmall, color = CyberRed, fontWeight = FontWeight.Black)
+            Text("SET", style = MaterialTheme.typography.labelSmall, color = PremiumRed, fontWeight = FontWeight.Black)
         }
     }
 }
@@ -344,11 +344,11 @@ fun EconomyCheats(cheatManager: CheatManager) {
     CheatSection("ECONOMY") {
         Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
             Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                CyberButton(text = "+1K CR", onClick = { cheatManager.addMoney(1000) }, color = CyberRed, modifier = Modifier.weight(1f))
-                CyberButton(text = "+10K CR", onClick = { cheatManager.addMoney(10000) }, color = CyberRed, modifier = Modifier.weight(1f))
+                CyberButton(text = "+1K CR", onClick = { cheatManager.addMoney(1000) }, color = PremiumRed, modifier = Modifier.weight(1f))
+                CyberButton(text = "+10K CR", onClick = { cheatManager.addMoney(10000) }, color = PremiumRed, modifier = Modifier.weight(1f))
             }
             
-            CyberButton(text = "PURGE_INVENTORY", onClick = { cheatManager.clearInventory() }, color = CyberRed, modifier = Modifier.fillMaxWidth())
+            CyberButton(text = "PURGE_INVENTORY", onClick = { cheatManager.clearInventory() }, color = PremiumRed, modifier = Modifier.fillMaxWidth())
 
             val infinite by cheatManager.infiniteMoney.collectAsState()
             CheatToggle("INFINITE CREDITS", infinite) { cheatManager.infiniteMoney.value = it }
@@ -372,7 +372,7 @@ fun TimeCheats(cheatManager: CheatManager) {
                     cheatManager.timeDilation.value = it
                 },
                 valueRange = 0.1f..10.0f,
-                colors = SliderDefaults.colors(thumbColor = CyberRed, activeTrackColor = CyberRed, inactiveTrackColor = Color.White.copy(alpha = 0.1f))
+                colors = SliderDefaults.colors(thumbColor = PremiumRed, activeTrackColor = PremiumRed, inactiveTrackColor = Color.White.copy(alpha = 0.1f))
             )
         }
     }
@@ -385,7 +385,7 @@ fun ProgressionCheats(cheatManager: CheatManager) {
             StatCheatRow("LEVEL", onSet = { cheatManager.setLevel(it.toInt()) })
             StatCheatRow("ADD_XP", onSet = { cheatManager.addXp(it.toLong()) })
             
-            CyberButton(text = "RESET_PROGRESSION", onClick = { /* reset logic */ }, color = CyberRed, modifier = Modifier.fillMaxWidth())
+            CyberButton(text = "RESET_PROGRESSION", onClick = { /* reset logic */ }, color = PremiumRed, modifier = Modifier.fillMaxWidth())
         }
     }
 }
@@ -397,7 +397,7 @@ fun SocialCheats(cheatManager: CheatManager) {
             StatCheatRow("FOLLOWERS", onSet = { cheatManager.setFollowers(it.toInt()) })
             StatCheatRow("PRESTIGE", onSet = { cheatManager.setSocialPrestige(it.toInt()) })
             
-            CyberButton(text = "FORCE_NPC_POST", onClick = { /* force logic */ }, color = CyberBlue, modifier = Modifier.fillMaxWidth())
+            CyberButton(text = "FORCE_NPC_POST", onClick = { /* force logic */ }, color = PremiumBlue, modifier = Modifier.fillMaxWidth())
         }
     }
 }
@@ -406,8 +406,8 @@ fun SocialCheats(cheatManager: CheatManager) {
 fun WorkCheats(cheatManager: CheatManager) {
     CheatSection("CAREER_OVERRIDE") {
         Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-            CyberButton(text = "MAX_JOB_EXP", onClick = { /* max exp logic */ }, color = CyberGreen, modifier = Modifier.fillMaxWidth())
-            CyberButton(text = "RESET_CAREER", onClick = { /* reset logic */ }, color = CyberRed, modifier = Modifier.fillMaxWidth())
+            CyberButton(text = "MAX_JOB_EXP", onClick = { /* max exp logic */ }, color = PremiumGreen, modifier = Modifier.fillMaxWidth())
+            CyberButton(text = "RESET_CAREER", onClick = { /* reset logic */ }, color = PremiumRed, modifier = Modifier.fillMaxWidth())
         }
     }
 }
@@ -421,10 +421,10 @@ fun WeatherCheats(cheatManager: CheatManager) {
                     text = weather.name,
                     onClick = { cheatManager.setWeather(weather) },
                     color = when (weather) {
-                        Weather.SUNNY -> CyberYellow
-                        Weather.RAINY -> CyberBlue
+                        Weather.SUNNY -> PremiumGold
+                        Weather.RAINY -> PremiumBlue
                         Weather.CLOUDY -> Color.Gray
-                        Weather.STORMY -> CyberPurple
+                        Weather.STORMY -> PremiumPurple
                     },
                     modifier = Modifier.fillMaxWidth()
                 )
@@ -454,7 +454,7 @@ fun ItemGiver(cheatManager: CheatManager) {
         
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
             Text("ENERGY_DRINK", style = MaterialTheme.typography.labelSmall, color = Color.White)
-            CyberButton(text = "SPAWN", onClick = { cheatManager.giveItem("energy_drink") }, color = CyberRed)
+            CyberButton(text = "SPAWN", onClick = { cheatManager.giveItem("energy_drink") }, color = PremiumRed)
         }
     }
 }
@@ -462,9 +462,9 @@ fun ItemGiver(cheatManager: CheatManager) {
 @Composable
 fun CheatSection(title: String, content: @Composable () -> Unit) {
     Column(modifier = Modifier.padding(bottom = 24.dp)) {
-        Text(title, style = MaterialTheme.typography.labelSmall, color = CyberRed.copy(alpha = 0.6f), fontWeight = FontWeight.Bold)
+        Text(title, style = MaterialTheme.typography.labelSmall, color = PremiumRed.copy(alpha = 0.6f), fontWeight = FontWeight.Bold)
         Spacer(modifier = Modifier.height(12.dp))
-        CyberCard(accentColor = CyberRed) {
+        CyberCard(accentColor = PremiumRed) {
             Box(modifier = Modifier.padding(vertical = 4.dp)) {
                 content()
             }
@@ -484,11 +484,12 @@ fun CheatToggle(label: String, checked: Boolean, onCheckedChange: (Boolean) -> U
             checked = checked, 
             onCheckedChange = onCheckedChange, 
             colors = SwitchDefaults.colors(
-                checkedThumbColor = CyberRed, 
-                checkedTrackColor = CyberRed.copy(alpha = 0.2f),
+                checkedThumbColor = PremiumRed, 
+                checkedTrackColor = PremiumRed.copy(alpha = 0.2f),
                 uncheckedThumbColor = Color.Gray,
                 uncheckedTrackColor = Color.White.copy(alpha = 0.05f)
             )
         )
     }
 }
+

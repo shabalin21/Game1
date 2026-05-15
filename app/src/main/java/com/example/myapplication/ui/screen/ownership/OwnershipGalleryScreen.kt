@@ -46,7 +46,7 @@ fun OwnershipGalleryScreen(
     Box(
         modifier = Modifier.fillMaxSize()
     ) {
-        CyberBackground(accentColor = CyberBlue)
+        CyberBackground(accentColor = PremiumBlue)
 
         Column(
             modifier = Modifier
@@ -59,7 +59,7 @@ fun OwnershipGalleryScreen(
             ScreenHeader(
                 title = "COLLECTION_VAULT",
                 subtitle = "OWNED_ASSETS",
-                accentColor = CyberBlue,
+                accentColor = PremiumBlue,
                 onBack = onBack
             )
 
@@ -129,10 +129,10 @@ fun AssetSection(
 @Composable
 fun OwnershipCard(item: ItemModel, isEquipped: Boolean, onEquip: () -> Unit) {
     val accentColor = when(item.category) {
-        ItemCategory.HOMES -> CyberPurple
-        ItemCategory.VEHICLES -> CyberBlue
-        ItemCategory.JEWELRY -> CyberYellow
-        ItemCategory.PETS -> CyberGreen
+        ItemCategory.HOMES -> PremiumPurple
+        ItemCategory.VEHICLES -> PremiumBlue
+        ItemCategory.JEWELRY -> PremiumGold
+        ItemCategory.PETS -> PremiumGreen
         else -> Color.White
     }
 
@@ -182,3 +182,4 @@ fun OwnershipCard(item: ItemModel, isEquipped: Boolean, onEquip: () -> Unit) {
         }
     }
 }
+

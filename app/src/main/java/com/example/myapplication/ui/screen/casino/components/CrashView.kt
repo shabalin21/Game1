@@ -35,13 +35,13 @@ fun CrashView(
 ) {
     var selectedWager by remember { mutableIntStateOf(100) }
 
-    CasinoGameCard(accentColor = NeonPink) {
+    CasinoGameCard(accentColor = PremiumPink) {
         Column(
             modifier = Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            GameSectionHeader("High Stakes", color = NeonPink)
+            GameSectionHeader("High Stakes", color = PremiumPink)
 
             Spacer(modifier = Modifier.height(16.dp))
 
@@ -52,7 +52,7 @@ fun CrashView(
                     .fillMaxWidth()
                     .clip(RoundedCornerShape(12.dp))
                     .background(Color.Black.copy(alpha = 0.5f))
-                    .border(1.dp, NeonPink.copy(alpha = 0.1f), RoundedCornerShape(12.dp)),
+                    .border(1.dp, PremiumPink.copy(alpha = 0.1f), RoundedCornerShape(12.dp)),
                 contentAlignment = Alignment.Center
             ) {
                 CrashGraph(state = state)
@@ -65,9 +65,9 @@ fun CrashView(
                         else -> "1.00"
                     }
                     val color = when (state) {
-                        is CrashState.Rising -> if (state.multiplier > 5f) NeonRed else NeonCyan
-                        is CrashState.Crashed -> NeonRed
-                        is CrashState.CashedOut -> NeonGreen
+                        is CrashState.Rising -> if (state.multiplier > 5f) PremiumRed else PremiumCyan
+                        is CrashState.Crashed -> PremiumRed
+                        is CrashState.CashedOut -> PremiumGreen
                         else -> Color.Gray
                     }
                     
@@ -79,9 +79,9 @@ fun CrashView(
                     )
                     
                     if (state is CrashState.Crashed) {
-                        Text("Crashed!", color = NeonRed, style = MaterialTheme.typography.labelMedium, fontWeight = FontWeight.Black)
+                        Text("Crashed!", color = PremiumRed, style = MaterialTheme.typography.labelMedium, fontWeight = FontWeight.Black)
                     } else if (state is CrashState.CashedOut) {
-                        Text("Payout: +${state.payout}", color = NeonGreen, style = MaterialTheme.typography.labelMedium, fontWeight = FontWeight.Black)
+                        Text("Payout: +${state.payout}", color = PremiumGreen, style = MaterialTheme.typography.labelMedium, fontWeight = FontWeight.Black)
                     }
                 }
             }
@@ -96,14 +96,14 @@ fun CrashView(
                     onAction = { onStart(selectedWager) },
                     actionText = "START",
                     enabled = coins >= selectedWager,
-                    accentColor = NeonPink,
+                    accentColor = PremiumPink,
                     maxCoins = coins
                 )
             } else {
                 NeonButton(
                     text = "CASH OUT",
                     onClick = onCashOut,
-                    color = NeonGreen,
+                    color = PremiumGreen,
                     modifier = Modifier.fillMaxWidth().height(64.dp)
                 )
             }
@@ -149,15 +149,17 @@ fun CrashGraph(state: CrashState) {
         
         drawPath(
             path = path,
-            color = if (state is CrashState.Crashed) NeonRed else NeonCyan.copy(alpha = pulse),
+            color = if (state is CrashState.Crashed) PremiumRed else PremiumCyan.copy(alpha = pulse),
             style = Stroke(width = 3.dp.toPx())
         )
         
         // Point
         drawCircle(
-            color = if (state is CrashState.Crashed) NeonRed else Color.White,
+            color = if (state is CrashState.Crashed) PremiumRed else Color.White,
             radius = 4.dp.toPx(),
             center = Offset(endX, endY)
         )
     }
 }
+
+

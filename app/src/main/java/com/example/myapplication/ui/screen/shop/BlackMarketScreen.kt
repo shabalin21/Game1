@@ -28,7 +28,7 @@ fun BlackMarketScreen(
     val blackMarketItems by viewModel.blackMarketSelection.collectAsState()
 
     Box(modifier = Modifier.fillMaxSize()) {
-        CyberBackground(accentColor = NeonPink)
+        CyberBackground(accentColor = PremiumPink)
 
         Column(
             modifier = Modifier
@@ -41,7 +41,7 @@ fun BlackMarketScreen(
             ScreenHeader(
                 title = "UNDERG_NET",
                 subtitle = "ILLEGAL_ENHANCEMENTS",
-                accentColor = NeonPink,
+                accentColor = PremiumPink,
                 trailingContent = { 
                     IconButton(onClick = onBack) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back", tint = Color.White)
@@ -54,7 +54,7 @@ fun BlackMarketScreen(
                     Text(
                         "CONNECTION_LOST: MARKET_OFFLINE",
                         style = MaterialTheme.typography.bodyLarge,
-                        color = NeonPink.copy(alpha = 0.5f),
+                        color = PremiumPink.copy(alpha = 0.5f),
                         fontWeight = FontWeight.Black
                     )
                 }
@@ -78,3 +78,5 @@ fun BlackMarketScreen(
         }
     }
 }
+
+

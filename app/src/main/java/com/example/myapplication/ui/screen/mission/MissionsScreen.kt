@@ -29,7 +29,7 @@ fun MissionsScreen(
     val missions = pet?.missions ?: com.example.myapplication.domain.model.MissionState()
 
     Box(modifier = Modifier.fillMaxSize()) {
-        CyberBackground(accentColor = CyberBlue)
+        CyberBackground(accentColor = PremiumBlue)
 
         Column(
             modifier = Modifier
@@ -42,7 +42,7 @@ fun MissionsScreen(
             ScreenHeader(
                 title = "OBJECTIVES",
                 subtitle = "DAILY_WEEKLY_SYSTEM",
-                accentColor = CyberBlue,
+                accentColor = PremiumBlue,
                 onBack = onBack
             )
 
@@ -51,14 +51,14 @@ fun MissionsScreen(
                 verticalArrangement = Arrangement.spacedBy(16.dp),
                 contentPadding = PaddingValues(bottom = 32.dp)
             ) {
-                item { MissionHeader("DAILY MISSIONS", NeonGreen) }
+                item { MissionHeader("DAILY MISSIONS", PremiumGreen) }
                 items(missions.dailyMissions) { mission ->
                     MissionCard(mission)
                 }
 
                 item { Spacer(modifier = Modifier.height(24.dp)) }
 
-                item { MissionHeader("WEEKLY MISSIONS", CyberYellow) }
+                item { MissionHeader("WEEKLY MISSIONS", PremiumGold) }
                 items(missions.weeklyMissions) { mission ->
                     MissionCard(mission)
                 }
@@ -81,7 +81,7 @@ fun MissionHeader(title: String, color: Color) {
 
 @Composable
 fun MissionCard(mission: MissionProgress) {
-    CyberCard(accentColor = if (mission.isCompleted) NeonGreen else Color.White.copy(alpha = 0.1f)) {
+    CyberCard(accentColor = if (mission.isCompleted) PremiumGreen else Color.White.copy(alpha = 0.1f)) {
         Column(modifier = Modifier.padding(8.dp)) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -90,7 +90,7 @@ fun MissionCard(mission: MissionProgress) {
             ) {
                 Text(mission.title, style = MaterialTheme.typography.titleMedium, color = Color.White, fontWeight = FontWeight.Bold)
                 if (mission.isCompleted) {
-                    CyberBadge(text = "COMPLETED", accentColor = NeonGreen)
+                    CyberBadge(text = "COMPLETED", accentColor = PremiumGreen)
                 }
             }
             
@@ -103,7 +103,7 @@ fun MissionCard(mission: MissionProgress) {
             LinearProgressIndicator(
                 progress = { progress },
                 modifier = Modifier.fillMaxWidth().height(4.dp),
-                color = if (mission.isCompleted) NeonGreen else CyberBlue,
+                color = if (mission.isCompleted) PremiumGreen else PremiumBlue,
                 trackColor = Color.White.copy(alpha = 0.05f)
             )
             
@@ -120,10 +120,11 @@ fun MissionCard(mission: MissionProgress) {
                 Text(
                     "Reward: ${mission.reward.coins} CR",
                     style = MaterialTheme.typography.labelSmall,
-                    color = CyberYellow,
+                    color = PremiumGold,
                     fontWeight = FontWeight.Black
                 )
             }
         }
     }
 }
+

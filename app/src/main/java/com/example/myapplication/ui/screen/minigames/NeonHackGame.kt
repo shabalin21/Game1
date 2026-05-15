@@ -84,7 +84,7 @@ fun NeonHackGame(
         // Game Canvas
         Canvas(modifier = Modifier.fillMaxSize()) {
             nodes.forEach { node ->
-                val color = if (node.isCorrupted) NeonPink else NeonGreen
+                val color = if (node.isCorrupted) PremiumPink else PremiumGreen
                 drawCircle(
                     color = color.copy(alpha = 0.2f),
                     radius = 50f,
@@ -125,17 +125,17 @@ fun NeonHackGame(
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Text("SCORE: $score", color = Color.White, fontWeight = FontWeight.Black, fontSize = 24.sp)
-                Text("TIME: ${timeLeft.toInt()}s", color = if (timeLeft < 5) NeonPink else Color.White, fontWeight = FontWeight.Black, fontSize = 24.sp)
+                Text("TIME: ${timeLeft.toInt()}s", color = if (timeLeft < 5) PremiumPink else Color.White, fontWeight = FontWeight.Black, fontSize = 24.sp)
             }
 
             if (gameState == HackGameState.START) {
                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        Text("NEON HACK", color = NeonGreen, fontWeight = FontWeight.Black, fontSize = 48.sp)
+                        Text("NEON HACK", color = PremiumGreen, fontWeight = FontWeight.Black, fontSize = 48.sp)
                         Text("Tap Green Nodes, Avoid Pink Corrupted Nodes", color = Color.White.copy(alpha = 0.6f), modifier = Modifier.padding(bottom = 32.dp))
                         Button(
                             onClick = { gameState = HackGameState.PLAYING },
-                            colors = ButtonDefaults.buttonColors(containerColor = NeonGreen),
+                            colors = ButtonDefaults.buttonColors(containerColor = PremiumGreen),
                             shape = RoundedCornerShape(16.dp)
                         ) {
                             Text("INITIALIZE HACK", color = Color.Black, fontWeight = FontWeight.Bold)
@@ -146,13 +146,13 @@ fun NeonHackGame(
 
             if (gameState == HackGameState.ENDED) {
                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    GlassCard(borderColor = NeonGreen) {
+                    GlassCard(borderColor = PremiumGreen) {
                         Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.padding(32.dp)) {
-                            Text("HACK COMPLETE", color = NeonGreen, fontWeight = FontWeight.Black, fontSize = 32.sp)
+                            Text("HACK COMPLETE", color = PremiumGreen, fontWeight = FontWeight.Black, fontSize = 32.sp)
                             Text("FINAL SCORE: $score", color = Color.White, fontSize = 24.sp, modifier = Modifier.padding(vertical = 16.dp))
                             Button(
                                 onClick = onBack,
-                                colors = ButtonDefaults.buttonColors(containerColor = NeonGreen),
+                                colors = ButtonDefaults.buttonColors(containerColor = PremiumGreen),
                                 shape = RoundedCornerShape(16.dp)
                             ) {
                                 Text("EXIT TERMINAL", color = Color.Black, fontWeight = FontWeight.Bold)
@@ -188,3 +188,4 @@ data class HackNode(
 )
 
 private enum class HackGameState { START, PLAYING, ENDED }
+

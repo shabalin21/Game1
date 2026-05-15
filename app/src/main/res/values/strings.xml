@@ -1,3 +1,11 @@
 <resources>
     <string name="app_name">NEON BUDDY</string>
+    <string name="hunger_label">HUNGER</string>
+    <string name="energy_label">ENERGY</string>
+    <string name="happiness_label">HAPPINESS</string>
+    <string name="feed_action">Feed</string>
+    <string name="pet_action">Pet</string>
+    <string name="wake_action">Wake</string>
+    <string name="sleep_action">Sleep</string>
+    <string name="menu_title">Buddy Menu</string>
 </resources>

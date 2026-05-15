@@ -53,7 +53,7 @@ fun MinigameHub(
         // Decorative background elements
         Canvas(modifier = Modifier.fillMaxSize()) {
             drawCircle(
-                Brush.radialGradient(listOf(NeonBlue.copy(alpha = 0.05f), Color.Transparent)),
+                Brush.radialGradient(listOf(PremiumBlue.copy(alpha = 0.05f), Color.Transparent)),
                 radius = size.width,
                 center = Offset(size.width, 0f)
             )
@@ -70,21 +70,21 @@ fun MinigameHub(
             ScreenHeader(
                 title = "ARCADE_HUB",
                 subtitle = "NEURAL_SENSORY_TASKS",
-                accentColor = NeonBlue,
+                accentColor = PremiumBlue,
                 onBack = onBack
             )
             
             if (!canPlay) {
                 Surface(
-                    color = NeonPink.copy(alpha = 0.1f),
+                    color = PremiumPink.copy(alpha = 0.1f),
                     modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp),
                     shape = RoundedCornerShape(8.dp),
-                    border = androidx.compose.foundation.BorderStroke(1.dp, NeonPink.copy(alpha = 0.3f))
+                    border = androidx.compose.foundation.BorderStroke(1.dp, PremiumPink.copy(alpha = 0.3f))
                 ) {
                     Text(
                         text = "LOCKED: Pet is too weak. Rest or feed them!",
                         modifier = Modifier.padding(12.dp),
-                        color = NeonPink,
+                        color = PremiumPink,
                         fontWeight = FontWeight.Bold,
                         fontSize = 12.sp
                     )
@@ -103,7 +103,7 @@ fun MinigameHub(
                         emoji = "📠",
                         reward = "COINS / INTEL",
                         difficulty = "MEDIUM",
-                        color = NeonGreen,
+                        color = PremiumGreen,
                         enabled = canPlay,
                         onClick = onPlayNeonHack
                     )
@@ -115,7 +115,7 @@ fun MinigameHub(
                         emoji = "🚀",
                         reward = "COINS / XP",
                         difficulty = "HARD",
-                        color = NeonBlue,
+                        color = PremiumBlue,
                         enabled = canPlay,
                         onClick = onPlayVoidRunner
                     )
@@ -127,7 +127,7 @@ fun MinigameHub(
                         emoji = "⚡",
                         reward = "COINS",
                         difficulty = "EASY",
-                        color = NeonOrange,
+                        color = PremiumOrange,
                         enabled = canPlay,
                         onClick = onPlayTapRush
                     )
@@ -139,7 +139,7 @@ fun MinigameHub(
                         emoji = "🌌",
                         reward = "COINS / AGILITY",
                         difficulty = "HARD",
-                        color = NeonBlue,
+                        color = PremiumBlue,
                         enabled = canPlay,
                         onClick = onPlayNeonDodge
                     )
@@ -151,7 +151,7 @@ fun MinigameHub(
                         emoji = "🎯",
                         reward = "COINS / FOCUS",
                         difficulty = "MEDIUM",
-                        color = NeonPink,
+                        color = PremiumPink,
                         enabled = canPlay,
                         onClick = onPlayReactionTap
                     )
@@ -163,7 +163,7 @@ fun MinigameHub(
                         emoji = "🧠",
                         reward = "COINS / MEMORY",
                         difficulty = "EASY",
-                        color = NeonGreen,
+                        color = PremiumGreen,
                         enabled = canPlay,
                         onClick = onPlayMemoryMatch
                     )
@@ -237,3 +237,4 @@ fun MinigameCard(
         }
     }
 }
+

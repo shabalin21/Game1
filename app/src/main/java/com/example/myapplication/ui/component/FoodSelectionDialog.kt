@@ -107,7 +107,7 @@ fun FoodItemCard(
                 Box(
                     modifier = Modifier
                         .align(Alignment.BottomEnd)
-                        .background(NeonPurple, RoundedCornerShape(4.dp))
+                        .background(PremiumPurple, RoundedCornerShape(4.dp))
                         .padding(horizontal = 4.dp)
                 ) {
                     Text(
@@ -137,7 +137,7 @@ fun FoodItemCard(
                     Text(
                         text = "+${item.effect.hungerChange.toInt()}🥩",
                         fontSize = 9.sp,
-                        color = NeonOrange,
+                        color = PremiumOrange,
                         fontWeight = FontWeight.Bold
                     )
                     Spacer(modifier = Modifier.width(4.dp))
@@ -146,7 +146,7 @@ fun FoodItemCard(
                     Text(
                         text = "+${item.effect.happinessChange.toInt()}💖",
                         fontSize = 9.sp,
-                        color = NeonPink,
+                        color = PremiumPink,
                         fontWeight = FontWeight.Bold
                     )
                 }
@@ -154,3 +154,4 @@ fun FoodItemCard(
         }
     }
 }
+

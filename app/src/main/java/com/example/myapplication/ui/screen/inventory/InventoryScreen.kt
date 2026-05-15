@@ -116,7 +116,7 @@ fun InventoryItemCard(
     onClick: () -> Unit
 ) {
     val item = ItemRegistry.getItem(itemId)
-    val rarityColor = item?.let { getRarityColor(it.rarity) } ?: NeonPurple
+    val rarityColor = item?.let { getRarityColor(it.rarity) } ?: PremiumPurple
 
     GlassCard(
         modifier = Modifier
@@ -140,7 +140,7 @@ fun InventoryItemCard(
                     Box(
                         modifier = Modifier
                             .align(Alignment.BottomEnd)
-                            .background(NeonPurple, RoundedCornerShape(4.dp))
+                            .background(PremiumPurple, RoundedCornerShape(4.dp))
                             .padding(horizontal = 4.dp)
                     ) {
                         Text(
@@ -166,10 +166,11 @@ fun InventoryItemCard(
 
 private fun getRarityColor(rarity: ItemRarity): Color = when (rarity) {
     ItemRarity.COMMON -> Color(0xFF9E9E9E)
-    ItemRarity.UNCOMMON -> CyberGreen
-    ItemRarity.RARE -> CyberBlue
-    ItemRarity.EPIC -> CyberPurple
-    ItemRarity.LEGENDARY -> CyberYellow
-    ItemRarity.MYTHIC -> NeonPink
+    ItemRarity.UNCOMMON -> PremiumGreen
+    ItemRarity.RARE -> PremiumBlue
+    ItemRarity.EPIC -> PremiumPurple
+    ItemRarity.LEGENDARY -> PremiumGold
+    ItemRarity.MYTHIC -> PremiumPink
     ItemRarity.GOLD -> Color(0xFFFFD700)
 }
+

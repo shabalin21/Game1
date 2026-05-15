@@ -15,9 +15,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.myapplication.util.PerformanceMonitor
-import com.example.myapplication.ui.theme.NeonGreen
-import com.example.myapplication.ui.theme.NeonOrange
-import com.example.myapplication.ui.theme.NeonPink
+import com.example.myapplication.ui.theme.PremiumGreen
+import com.example.myapplication.ui.theme.PremiumOrange
+import com.example.myapplication.ui.theme.PremiumPink
 import kotlin.math.roundToInt
 
 import com.example.myapplication.ui.debug.DevLabManager
@@ -49,9 +49,9 @@ fun GlobalOverlay(
             horizontalAlignment = Alignment.Start
         ) {
             val fpsColor = when {
-                fps >= 55f -> NeonGreen
-                fps >= 30f -> NeonOrange
-                else -> NeonPink
+                fps >= 55f -> PremiumGreen
+                fps >= 30f -> PremiumOrange
+                else -> PremiumPink
             }
             
             Text(
@@ -73,3 +73,4 @@ fun GlobalOverlay(
         }
     }
 }
+

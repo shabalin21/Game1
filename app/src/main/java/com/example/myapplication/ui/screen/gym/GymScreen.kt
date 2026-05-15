@@ -45,7 +45,7 @@ fun GymScreen(
     Box(
         modifier = Modifier.fillMaxSize()
     ) {
-        CyberBackground(accentColor = CyberGreen)
+        CyberBackground(accentColor = PremiumGreen)
 
         Column(
             modifier = Modifier
@@ -59,7 +59,7 @@ fun GymScreen(
             ScreenHeader(
                 title = "FITNESS_CENTER",
                 subtitle = "NEURAL_PHYSICAL_OPTIMIZATION",
-                accentColor = CyberGreen,
+                accentColor = PremiumGreen,
                 onBack = onBack
             )
 
@@ -95,15 +95,15 @@ fun GymScreen(
                             .weight(1f)
                             .clip(RoundedCornerShape(8.dp))
                             .clickable { selectedCategory = category },
-                        color = if (isSelected) CyberGreen.copy(alpha = 0.2f) else SurfaceDark,
-                        border = if (isSelected) androidx.compose.foundation.BorderStroke(1.dp, CyberGreen) else null
+                        color = if (isSelected) PremiumGreen.copy(alpha = 0.2f) else SurfaceDark,
+                        border = if (isSelected) androidx.compose.foundation.BorderStroke(1.dp, PremiumGreen) else null
                     ) {
                         Text(
                             text = category.name.replace("_", " & "),
                             modifier = Modifier.padding(vertical = 12.dp),
                             textAlign = androidx.compose.ui.text.style.TextAlign.Center,
                             style = MaterialTheme.typography.labelSmall,
-                            color = if (isSelected) CyberGreen else Color.White.copy(alpha = 0.4f),
+                            color = if (isSelected) PremiumGreen else Color.White.copy(alpha = 0.4f),
                             fontWeight = FontWeight.Black
                         )
                     }
@@ -142,7 +142,7 @@ fun ExerciseCard(exercise: Exercise, onClick: () -> Unit) {
             .fillMaxWidth()
             .padding(vertical = 6.dp)
             .clickable { onClick() },
-        accentColor = CyberGreen
+        accentColor = PremiumGreen
     ) {
         Row(
             modifier = Modifier.padding(vertical = 4.dp),
@@ -152,8 +152,8 @@ fun ExerciseCard(exercise: Exercise, onClick: () -> Unit) {
                 modifier = Modifier
                     .size(42.dp)
                     .clip(RoundedCornerShape(8.dp))
-                    .background(CyberGreen.copy(alpha = 0.1f))
-                    .border(1.dp, CyberGreen.copy(alpha = 0.3f), RoundedCornerShape(8.dp)),
+                    .background(PremiumGreen.copy(alpha = 0.1f))
+                    .border(1.dp, PremiumGreen.copy(alpha = 0.3f), RoundedCornerShape(8.dp)),
                 contentAlignment = Alignment.Center
             ) {
                 Text(exercise.icon, fontSize = 20.sp)
@@ -166,7 +166,7 @@ fun ExerciseCard(exercise: Exercise, onClick: () -> Unit) {
                 Text(exercise.description, style = MaterialTheme.typography.labelSmall, color = Color.White.copy(alpha = 0.5f))
             }
             
-            Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null, tint = CyberGreen.copy(alpha = 0.5f), modifier = Modifier.size(16.dp).graphicsLayer { rotationZ = 180f })
+            Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null, tint = PremiumGreen.copy(alpha = 0.5f), modifier = Modifier.size(16.dp).graphicsLayer { rotationZ = 180f })
         }
     }
 }
@@ -199,7 +199,7 @@ fun TrainingOverlay(exercise: Exercise, onComplete: () -> Unit) {
             Text(
                 "OPTIMIZING_${exercise.name.uppercase()}",
                 style = MaterialTheme.typography.displaySmall,
-                color = CyberGreen,
+                color = PremiumGreen,
                 fontWeight = FontWeight.Black
             )
             Spacer(modifier = Modifier.height(32.dp))
@@ -210,7 +210,7 @@ fun TrainingOverlay(exercise: Exercise, onComplete: () -> Unit) {
                     .width(240.dp)
                     .height(4.dp)
                     .clip(RoundedCornerShape(2.dp)),
-                color = CyberGreen,
+                color = PremiumGreen,
                 trackColor = Color.White.copy(alpha = 0.1f),
             )
             
@@ -238,3 +238,4 @@ fun AmbientGymBackground() {
         )
     }
 }
+
